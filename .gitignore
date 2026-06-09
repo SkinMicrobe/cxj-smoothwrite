@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+
+examples/output/
+output/
+
+*.pdf
+*.docx
+*.png
+*.jpg
+*.jpeg
+*.log

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "parsed_pdf.schema.json",
+  "title": "ParsedPDF",
+  "type": "object",
+  "properties": {
+    "source_pdf": { "type": "string" },
+    "pages": {
+      "type": "array",
+      "items": { "$ref": "pdf_page.schema.json" },
+      "default": []
+    },
+    "full_text": { "type": "string" },
+    "figure_captions": {
+      "type": "array",
+      "items": { "$ref": "figure_caption.schema.json" },
+      "default": []
+    }
+  },
+  "required": ["source_pdf", "full_text"],
+  "additionalProperties": false
+}

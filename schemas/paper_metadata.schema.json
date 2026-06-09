@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "paper_metadata.schema.json",
+  "title": "PaperMetadata",
+  "type": "object",
+  "properties": {
+    "title": { "type": ["string", "null"], "default": null },
+    "journal": { "type": ["string", "null"], "default": null },
+    "year": { "type": ["string", "null"], "default": null },
+    "month": { "type": ["string", "null"], "default": null },
+    "authors": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "doi": { "type": ["string", "null"], "default": null },
+    "url": { "type": ["string", "null"], "default": null },
+    "research_object": { "type": ["string", "null"], "default": null },
+    "core_question": { "type": ["string", "null"], "default": null },
+    "notes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    }
+  },
+  "additionalProperties": false
+}

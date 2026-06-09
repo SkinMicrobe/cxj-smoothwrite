@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "article_plan.schema.json",
+  "title": "ArticlePlan",
+  "type": "object",
+  "properties": {
+    "title": { "type": "string" },
+    "main_thesis": { "type": "string" },
+    "old_model": { "type": ["string", "null"], "default": null },
+    "new_evidence": { "type": ["string", "null"], "default": null },
+    "new_model": { "type": ["string", "null"], "default": null },
+    "sections": {
+      "type": "array",
+      "items": { "$ref": "article_section.schema.json" },
+      "default": []
+    }
+  },
+  "required": ["title", "main_thesis"],
+  "additionalProperties": false
+}

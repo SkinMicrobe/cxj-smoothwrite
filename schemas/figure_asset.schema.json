@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "figure_asset.schema.json",
+  "title": "FigureAsset",
+  "type": "object",
+  "properties": {
+    "figure_id": { "type": "string" },
+    "caption": { "type": ["string", "null"], "default": null },
+    "page_number": { "type": ["integer", "null"], "default": null },
+    "page_image": { "type": ["string", "null"], "default": null },
+    "crop_image": { "type": ["string", "null"], "default": null },
+    "crop_confidence": { "type": "string" },
+    "notes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    }
+  },
+  "required": ["figure_id", "crop_confidence"],
+  "additionalProperties": false
+}

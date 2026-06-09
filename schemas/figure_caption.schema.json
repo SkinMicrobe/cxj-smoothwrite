@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "figure_caption.schema.json",
+  "title": "FigureCaption",
+  "type": "object",
+  "properties": {
+    "figure_id": { "type": "string" },
+    "caption": { "type": "string" },
+    "page_number": { "type": ["integer", "null"], "default": null }
+  },
+  "required": ["figure_id", "caption"],
+  "additionalProperties": false
+}

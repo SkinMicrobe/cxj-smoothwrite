@@ -1,0 +1,21 @@
+article:
+  target_length_min: 3000
+  target_length_max: 4500
+  default_figure_count: 4
+  language: zh-CN
+
+figures:
+  prefer_main_figures: true
+  attempt_crop: true
+  render_zoom: 2.5
+  image_width_cm: 14.5
+
+output:
+  article_md: article.md
+  final_docx: final.docx
+  metadata_json: paper_metadata.json
+  parsed_pdf_json: parsed_pdf.json
+  article_plan_json: article_plan.json
+  figure_plan_json: figure_plan.json
+  manifest_json: output_manifest.json
+  review_notes_md: review_notes.md

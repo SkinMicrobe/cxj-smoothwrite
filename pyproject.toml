@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smoothwrite"
+version = "0.1.0"
+description = "Generate Chinese life-science research interpretations from paper PDFs."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "pymupdf",
+  "python-docx",
+  "pydantic",
+  "pyyaml",
+  "pillow",
+  "rich",
+]
+
+[project.scripts]
+smoothwrite = "smoothwrite.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["smoothwrite*"]

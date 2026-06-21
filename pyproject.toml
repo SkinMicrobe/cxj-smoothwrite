@@ -22,3 +22,6 @@ smoothwrite = "smoothwrite.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["smoothwrite*"]
+
+[tool.setuptools.package-data]
+smoothwrite = ["resources/*.yaml", "prompts/*.md"]

@@ -117,10 +117,34 @@ def crop_figure_from_page(
         page_rect = page.rect
         caption_top = caption_block[1]
         if caption_top <= page_rect.height * 0.2:
-            asset.crop_image = None
-            asset.crop_confidence = "failed"
+            if asset.page_number <= 1:
+                asset.crop_image = None
+                asset.crop_confidence = "failed"
+                asset.notes.append(
+                    "Crop failed because the caption is too close to the top of the page."
+                )
+                return asset
+            # Science and similar journals often place a full-page figure on the
+            # preceding page and continue its caption at the top of the next page.
+            previous_page = document.load_page(asset.page_number - 2)
+            previous_rect = previous_page.rect
+            side_margin = previous_rect.width * 0.025
+            clip = fitz.Rect(
+                previous_rect.x0 + side_margin,
+                previous_rect.y0 + previous_rect.height * 0.02,
+                previous_rect.x1 - side_margin,
+                previous_rect.y1 - previous_rect.height * 0.02,
+            )
+            crop_path = output_path / _figure_filename(asset.figure_id, "crop")
+            pixmap = previous_page.get_pixmap(
+                matrix=fitz.Matrix(zoom, zoom), clip=clip, alpha=False
+            )
+            pixmap.save(str(crop_path))
+            asset.crop_image = str(crop_path)
+            asset.crop_confidence = "medium"
             asset.notes.append(
-                "Crop failed because the caption is too close to the top of the page."
+                "Caption began at the top of the page; exported the preceding page "
+                "as the likely full-page figure."
             )
             return asset
 

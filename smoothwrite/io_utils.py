@@ -11,7 +11,14 @@ from pydantic import BaseModel
 import yaml
 
 PathInput = str | PathLike[str]
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PACKAGE_ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = PACKAGE_ROOT.parent
+
+
+def _config_path(filename: str) -> Path:
+    """Resolve packaged configuration, with a source-tree compatibility fallback."""
+    packaged = PACKAGE_ROOT / "resources" / filename
+    return packaged if packaged.is_file() else PROJECT_ROOT / "config" / filename
 
 
 def ensure_dir(path: PathInput) -> Path:
@@ -70,9 +77,9 @@ def read_yaml(path: PathInput) -> dict[str, Any]:
 
 def load_default_config() -> dict[str, Any]:
     """Load the bundled smoothwrite default configuration."""
-    return read_yaml(PROJECT_ROOT / "config" / "default.yaml")
+    return read_yaml(_config_path("default.yaml"))
 
 
 def load_journal_style() -> dict[str, Any]:
     """Load the bundled journal display-name configuration."""
-    return read_yaml(PROJECT_ROOT / "config" / "journal_style.yaml")
+    return read_yaml(_config_path("journal_style.yaml"))

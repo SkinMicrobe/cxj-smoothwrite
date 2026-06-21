@@ -67,6 +67,7 @@ class FigurePlanItem(BaseModel):
     placement_after_section: str | None = None
     reason: str
     image_path: str | None = None
+    caption: str | None = None
 
 
 class FigurePlan(BaseModel):
@@ -109,7 +110,31 @@ class OutputManifest(BaseModel):
     figure_manifest_json: str | None = None
     review_notes_md: str | None = None
     output_manifest_json: str | None = None
+    reference_article_txt: str | None = None
+    writing_brief_json: str | None = None
     review_notes: list[str] = Field(default_factory=list)
+
+
+class ReferenceProfile(BaseModel):
+    """Text and structural signals extracted from a reference DOCX."""
+
+    source_docx: str
+    text: str
+    character_count: int
+    paragraph_count: int
+    section_headings: list[str] = Field(default_factory=list)
+    image_count: int = 0
+    page_count_hint: int | None = None
+
+
+class WritingBrief(BaseModel):
+    """Deterministic inputs for the Codex-assisted writing stage."""
+
+    target_word_count: int
+    target_section_count: int
+    target_figure_count: int
+    reference_profile: ReferenceProfile | None = None
+    instructions: list[str] = Field(default_factory=list)
 
 
 class PipelineInputs(BaseModel):

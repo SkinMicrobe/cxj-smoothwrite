@@ -56,8 +56,8 @@ def _review_signals(
     crop_risk = (
         "crop confidence is failed" in text
         or "crop confidence is low" in text
-        or "低置信度裁剪" in text
-        or "裁剪失败" in text
+        or ": failed。" in text
+        or ": low。" in text
     )
     metadata_risk = any(
         marker in text
@@ -67,7 +67,6 @@ def _review_signals(
             "was not found",
             "was not provided",
             "require manual review",
-            "元信息中不确定",
         )
     )
     return fallback, crop_risk, metadata_risk
@@ -142,19 +141,51 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="smoothwrite",
         description=(
-            "Parse a research paper PDF and generate a structured fallback "
-            "Chinese interpretation package with an editable Word document."
+            "Prepare evidence for a Codex-assisted Chinese research interpretation "
+            "and render the reviewed result as an editable Word document."
         ),
         epilog=(
             "Example:\n"
             "  smoothwrite run --pdf input/paper.pdf --url "
             "\"https://doi.org/xxxxx\" --output output/\n\n"
-            "The current version uses local fallback planning and writing. "
-            "Review review_notes.md before publication."
+            "Use 'prepare', let Codex author the JSON/Markdown intermediates, then "
+            "use 'finalize'. The legacy 'run' command remains for smoke tests only."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    subparsers = parser.add_subparsers(dest="command", metavar="{run}")
+    subparsers = parser.add_subparsers(dest="command", metavar="{prepare,finalize,run}")
+
+    prepare_parser = subparsers.add_parser(
+        "prepare",
+        help="Parse the paper and reference article for Codex-assisted writing.",
+    )
+    prepare_parser.add_argument("--pdf", required=True, help="Path to the input paper PDF.")
+    prepare_parser.add_argument("--output", default="output", help="Output directory.")
+    prepare_parser.add_argument("--reference-docx", help="Reference WeChat article DOCX.")
+    prepare_parser.add_argument("--url", help="Original paper or DOI URL.")
+    prepare_parser.add_argument("--journal", help="Journal name hint for metadata.")
+    prepare_parser.add_argument("--year", help="Publication year hint.")
+    prepare_parser.add_argument("--month", help="English publication month hint.")
+    prepare_parser.add_argument(
+        "--target-word-count",
+        type=int,
+        default=int(config["article"]["default_target_word_count"]),
+    )
+    prepare_parser.add_argument(
+        "--target-section-count",
+        type=int,
+        default=int(config["article"]["default_section_count"]),
+    )
+    prepare_parser.add_argument(
+        "--figure-count", type=int, default=default_figure_count
+    )
+    prepare_parser.add_argument("--no-crop", action="store_true")
+
+    finalize_parser = subparsers.add_parser(
+        "finalize",
+        help="Validate agent-authored intermediates and render final.docx.",
+    )
+    finalize_parser.add_argument("--output", default="output", help="Prepared output directory.")
     run_parser = subparsers.add_parser(
         "run",
         help="Run the complete local fallback pipeline.",
@@ -200,6 +231,48 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if args.command is None:
         parser.print_help()
+        return 0
+
+    if args.command == "prepare":
+        try:
+            from .pipeline import prepare_pipeline
+
+            brief = prepare_pipeline(
+                pdf_path=args.pdf,
+                output_dir=args.output,
+                reference_docx=args.reference_docx,
+                target_word_count=args.target_word_count,
+                target_section_count=args.target_section_count,
+                figure_count=args.figure_count,
+                url=args.url,
+                journal_hint=args.journal,
+                year_hint=args.year,
+                month_hint=args.month,
+                attempt_crop=not args.no_crop,
+            )
+        except Exception as exc:
+            print(f"smoothwrite prepare failed: {exc}", file=sys.stderr)
+            return 1
+        print(
+            "Preparation complete. Codex should now author article_plan.json, "
+            "figure_plan.json, and article.md before running finalize."
+        )
+        print(
+            f"Targets: {brief.target_word_count} Chinese characters, "
+            f"{brief.target_section_count} sections, {brief.target_figure_count} figures."
+        )
+        return 0
+
+    if args.command == "finalize":
+        try:
+            from .pipeline import finalize_pipeline
+
+            manifest = finalize_pipeline(args.output)
+        except Exception as exc:
+            print(f"smoothwrite finalize failed: {exc}", file=sys.stderr)
+            print(build_completion_summary(args.output))
+            return 1
+        print(build_completion_summary(manifest.output_dir, manifest))
         return 0
 
     if args.command == "run":

@@ -7,7 +7,11 @@ from pathlib import Path
 
 from .models import ArticlePlan, ArticleSection, FigurePlan, PaperMetadata, ParsedPDF
 
-_PROMPTS_DIR = Path(__file__).resolve().parents[1] / "prompts"
+_PACKAGE_PROMPTS_DIR = Path(__file__).resolve().parent / "prompts"
+_SOURCE_PROMPTS_DIR = Path(__file__).resolve().parents[1] / "prompts"
+_PROMPTS_DIR = (
+    _PACKAGE_PROMPTS_DIR if _PACKAGE_PROMPTS_DIR.is_dir() else _SOURCE_PROMPTS_DIR
+)
 _CHINESE_NUMERALS = (
     "一",
     "二",
@@ -71,6 +75,8 @@ def build_article_writer_prompt(
     parsed_pdf: ParsedPDF,
     article_plan: ArticlePlan,
     figure_plan: FigurePlan,
+    reference_article: str | None = None,
+    target_word_count: int | None = None,
 ) -> str:
     """Build the complete prompt used to generate article Markdown."""
     template = (
@@ -83,8 +89,11 @@ def build_article_writer_prompt(
         .replace("{{article_plan_json}}", _model_json(article_plan))
         .replace("{{figure_plan_json}}", _model_json(figure_plan))
         .replace("{{parsed_pdf_json}}", _model_json(parsed_pdf))
-        .replace("{{reference_article}}", "未提供参考范文。")
-        .replace("{{target_word_count}}", "未指定目标字数。")
+        .replace("{{reference_article}}", reference_article or "未提供参考范文。")
+        .replace(
+            "{{target_word_count}}",
+            str(target_word_count) if target_word_count else "未指定目标字数。",
+        )
     )
 
 

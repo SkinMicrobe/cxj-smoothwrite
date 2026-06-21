@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 
 from .io_utils import load_default_config, read_json, read_text, write_text
-from .models import FigurePlan
+from .models import FigurePlan, WritingBrief
 
 _TITLE_PATTERN = re.compile(r"^#\s+.+｜.+：.+$")
 _SECTION_PATTERN = re.compile(r"^(?:#{1,6}\s*)?[一二三四五六七八九十百]+、.+$")
@@ -22,6 +22,7 @@ _BAD_MARKERS = (
     (re.compile(r"^\s*References\s*$", flags=re.IGNORECASE | re.MULTILINE), "检测到 References 标记。"),
 )
 _MARKETING_TERMS = ("震惊", "重磅", "颠覆", "太强了", "不看后悔")
+_PLACEHOLDER_TERMS = ("流程占位稿", "本节内容根据文章逻辑骨架生成", "待核查团队")
 
 
 def _nonempty_lines(article_md: str) -> list[str]:
@@ -79,6 +80,10 @@ def validate_article(article_md: str) -> list[str]:
         if term in article_md:
             notes.append(f"检测到营销化表达：{term}")
 
+    for term in _PLACEHOLDER_TERMS:
+        if term in article_md:
+            notes.append(f"检测到未清理的占位表达：{term}")
+
     return notes
 
 
@@ -102,7 +107,21 @@ def validate_outputs(output_dir: str) -> list[str]:
     article_path = output_path / output_config["article_md"]
     if article_path.is_file():
         try:
-            notes.extend(validate_article(read_text(article_path)))
+            article_text = read_text(article_path)
+            notes.extend(validate_article(article_text))
+            brief_path = output_path / output_config.get(
+                "writing_brief_json", "writing_brief.json"
+            )
+            if brief_path.is_file():
+                brief = WritingBrief.model_validate(read_json(brief_path))
+                visible_count = len(re.sub(r"[#*\s]", "", article_text))
+                lower_bound = int(brief.target_word_count * 0.8)
+                upper_bound = int(brief.target_word_count * 1.2)
+                if not lower_bound <= visible_count <= upper_bound:
+                    notes.append(
+                        f"正文约 {visible_count} 字符，超出目标 {brief.target_word_count} "
+                        f"的允许范围 {lower_bound}–{upper_bound}。"
+                    )
         except Exception as exc:
             notes.append(f"无法读取 {output_config['article_md']}：{exc}")
 

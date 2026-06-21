@@ -37,7 +37,8 @@ _TITLE_EXCLUSION_PATTERN = re.compile(
         |page\b
         |pages\b
         |abstract\b
-        |research\ article\b
+        |research\ articles?\b
+        |research\ article\ summary\b
         |original\ article\b
         |article\b
         |open\ access\b
@@ -106,10 +107,37 @@ def _is_title_candidate(line: str) -> bool:
 
 
 def _extract_title(first_page_text: str) -> tuple[str | None, int | None]:
-    """Infer a title and its line index from the early first-page text."""
+    """Infer a possibly wrapped title and return its final line index."""
     lines = _nonempty_lines(first_page_text)
-    for index, line in enumerate(lines[:15]):
-        if _is_title_candidate(line):
+    journal_index = next(
+        (index for index, line in enumerate(lines[:25]) if _looks_like_journal(line)),
+        None,
+    )
+    search_start = journal_index + 1 if journal_index is not None else 0
+
+    for index in range(search_start, min(len(lines), search_start + 18)):
+        line = lines[index]
+        if not _is_title_candidate(line):
+            continue
+        if line.isupper() and len(line) < 60:
+            continue
+
+        title_lines = [line]
+        end_index = index
+        for continuation_index in range(index + 1, min(len(lines), index + 5)):
+            continuation = lines[continuation_index]
+            if _is_author_candidate(continuation):
+                break
+            if not _is_title_candidate(continuation):
+                break
+            if continuation.isupper() and len(continuation) < 60:
+                break
+            title_lines.append(continuation)
+            end_index = continuation_index
+        return " ".join(title_lines), end_index
+
+    for index, line in enumerate(lines[:20]):
+        if _is_title_candidate(line) and not line.isupper():
             return line, index
     return None, None
 
@@ -123,9 +151,10 @@ def _is_author_candidate(line: str) -> bool:
     if _SECTION_PATTERN.search(line) or _looks_like_journal(line):
         return False
 
-    lowered = line.casefold()
-    has_list_separator = "," in line or ";" in line or " and " in lowered
-    names = _AUTHOR_NAME_PATTERN.findall(line)
+    cleaned = re.sub(r"[*†‡§¶#\d]+", "", line)
+    lowered = cleaned.casefold()
+    has_list_separator = "," in cleaned or ";" in cleaned or " and " in lowered
+    names = _AUTHOR_NAME_PATTERN.findall(cleaned)
     return "et al" in lowered or (has_list_separator and len(names) >= 2)
 
 
@@ -135,17 +164,46 @@ def _extract_authors(first_page_text: str, title_index: int | None) -> list[str]
         return []
 
     lines = _nonempty_lines(first_page_text)
-    for line in lines[title_index + 1 : title_index + 7]:
-        if not _is_author_candidate(line):
+    author_lines: list[str] = []
+    for line in lines[title_index + 1 : title_index + 12]:
+        if _SECTION_PATTERN.search(line) or _AFFILIATION_PATTERN.search(line):
+            break
+        if _is_author_candidate(line) or (author_lines and "," in line):
+            author_lines.append(line)
+        elif author_lines:
+            break
+
+    if not author_lines:
+        return []
+
+    cleaned = re.sub(r"[*†‡§¶#\d]+", "", " ".join(author_lines))
+    cleaned = re.sub(r"\bet\s+al\.?", "", cleaned, flags=re.IGNORECASE)
+    parts = re.split(r"\s*(?:,|;|\band\b)\s*", cleaned)
+    return [part.strip(" .") for part in parts if _AUTHOR_NAME_PATTERN.fullmatch(part.strip(" ."))]
+
+
+def _extract_doi(first_page_text: str, full_text: str, journal: str | None) -> str | None:
+    """Rank DOI candidates so article identifiers beat cited preprints."""
+    candidates: list[tuple[int, str]] = []
+    seen: set[str] = set()
+    for match in _DOI_PATTERN.finditer(full_text):
+        doi = match.group(0).rstrip(".,;:)")
+        normalized = doi.casefold()
+        if normalized in seen:
             continue
-
-        cleaned = re.sub(r"[*†‡§¶#\d]+", "", line)
-        cleaned = re.sub(r"\bet\s+al\.?", "", cleaned, flags=re.IGNORECASE)
-        parts = re.split(r"\s*(?:,|;|\band\b)\s*", cleaned)
-        authors = [part.strip(" .") for part in parts if part.strip(" .")]
-        return authors
-
-    return []
+        seen.add(normalized)
+        score = 0
+        if normalized in first_page_text.casefold():
+            score += 50
+        context = full_text[max(0, match.start() - 160) : match.end() + 80].casefold()
+        if "cite this article" in context or "full article" in context:
+            score += 40
+        if journal and journal.casefold() == "science" and "10.1126/science." in normalized:
+            score += 40
+        if normalized.startswith("10.1101/"):
+            score -= 30
+        candidates.append((score, doi))
+    return max(candidates, default=(0, None), key=lambda item: item[0])[1]
 
 
 def _find_known_journal(text: str) -> str | None:
@@ -180,11 +238,6 @@ def extract_metadata(
     else:
         notes.append("Title was inferred heuristically from an early first-page line.")
 
-    doi_match = _DOI_PATTERN.search(first_page_text) or _DOI_PATTERN.search(full_text)
-    doi = doi_match.group(0).rstrip(".,;:)") if doi_match else None
-    if doi is None:
-        notes.append("DOI was not found in the parsed PDF text.")
-
     if journal_hint is not None:
         journal = journal_hint
     else:
@@ -193,6 +246,10 @@ def extract_metadata(
             notes.append("Journal could not be identified from the supported journal list.")
         else:
             notes.append("Journal was inferred heuristically from the first page.")
+
+    doi = _extract_doi(first_page_text, full_text, journal)
+    if doi is None:
+        notes.append("DOI was not found in the parsed PDF text.")
 
     if year_hint is not None:
         year = year_hint
@@ -221,7 +278,10 @@ def extract_metadata(
     else:
         notes.append("Authors could not be extracted reliably and require manual review.")
 
-    if url is None:
+    if url is None and doi:
+        url = f"https://doi.org/{doi}"
+        notes.append("Original paper URL was normalized from the detected DOI.")
+    elif url is None:
         notes.append("Original paper URL was not provided.")
 
     notes.append("research_object and core_question require later manual or LLM enrichment.")

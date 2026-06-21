@@ -29,6 +29,7 @@ def _models_json(models: list[object]) -> str:
 def build_article_plan_prompt(
     metadata: PaperMetadata,
     parsed_pdf: ParsedPDF,
+    writing_requirements: str | None = None,
 ) -> str:
     """Build the prompt used to generate an ArticlePlan JSON object."""
     template = (
@@ -39,7 +40,7 @@ def build_article_plan_prompt(
     return (
         template.replace("{{paper_metadata_json}}", _model_json(metadata))
         .replace("{{parsed_pdf_json}}", _model_json(parsed_pdf))
-        .replace("{{writing_requirements}}", "未提供额外写作要求。")
+        .replace("{{writing_requirements}}", writing_requirements or "未提供额外写作要求。")
     )
 
 

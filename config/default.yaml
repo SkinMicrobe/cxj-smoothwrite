@@ -1,7 +1,9 @@
 article:
-  target_length_min: 3000
-  target_length_max: 4500
-  default_figure_count: 4
+  target_length_min: 5000
+  target_length_max: 7000
+  default_target_word_count: 6000
+  default_section_count: 7
+  default_figure_count: 6
   language: zh-CN
 
 figures:
@@ -19,3 +21,5 @@ output:
   figure_plan_json: figure_plan.json
   manifest_json: output_manifest.json
   review_notes_md: review_notes.md
+  reference_article_txt: reference_article.txt
+  writing_brief_json: writing_brief.json

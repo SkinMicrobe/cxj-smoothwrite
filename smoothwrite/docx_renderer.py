@@ -7,8 +7,9 @@ from pathlib import Path
 
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
-from docx.shared import Cm, Pt
+from docx.shared import Cm, Mm, Pt, RGBColor
 
 from .io_utils import ensure_dir, load_default_config, read_json, read_text
 from .models import FigurePlan, FigurePlanItem
@@ -22,53 +23,105 @@ _FIGURE_MARKER_PATTERN = re.compile(
     flags=re.IGNORECASE,
 )
 _SMALL_TEXT_PATTERN = re.compile(r"^(论文信息|原文链接)：")
+_INLINE_MARKDOWN_PATTERN = re.compile(r"(\*\*[^*]+\*\*|\*[^*]+\*)")
 
 
 def _set_run_font(run: object, size: float, bold: bool = False) -> None:
     """Apply a readable Chinese-capable font to a run."""
-    run.font.name = "Arial"
+    run.font.name = "微软雅黑"
     run._element.rPr.rFonts.set(qn("w:eastAsia"), "微软雅黑")
+    run._element.rPr.rFonts.set(qn("w:cs"), "微软雅黑")
+    run._element.rPr.rFonts.set(qn("w:hint"), "eastAsia")
     run.font.size = Pt(size)
+    size_cs = OxmlElement("w:szCs")
+    size_cs.set(qn("w:val"), str(int(size * 2)))
+    run._element.rPr.append(size_cs)
     run.bold = bold
 
 
 def _configure_document_styles(document: Document) -> None:
-    """Set compact styles suitable for WeChat-oriented editorial documents."""
+    """Set a restrained reference-matched style for WeChat editorial drafts."""
+    section = document.sections[0]
+    section.page_width = Mm(210)
+    section.page_height = Mm(297)
+    section.top_margin = Cm(2.5)
+    section.bottom_margin = Cm(2.5)
+    section.left_margin = Cm(2.5)
+    section.right_margin = Cm(2.5)
+
     normal = document.styles["Normal"]
-    normal.font.name = "Arial"
+    normal.font.name = "微软雅黑"
     normal._element.rPr.rFonts.set(qn("w:eastAsia"), "微软雅黑")
-    normal.font.size = Pt(11)
-    normal.paragraph_format.space_after = Pt(6)
-    normal.paragraph_format.line_spacing = 1.35
+    normal.font.size = Pt(12)
+    normal.paragraph_format.space_after = Pt(10)
+    normal.paragraph_format.line_spacing = 1.5
+    normal.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.LEFT
 
     title = document.styles["Title"]
-    title.font.name = "Arial"
+    title.font.name = "微软雅黑"
     title._element.rPr.rFonts.set(qn("w:eastAsia"), "微软雅黑")
-    title.font.size = Pt(20)
+    title.font.size = Pt(15)
     title.font.bold = True
 
     heading = document.styles["Heading 1"]
-    heading.font.name = "Arial"
+    heading.font.name = "微软雅黑"
     heading._element.rPr.rFonts.set(qn("w:eastAsia"), "微软雅黑")
-    heading.font.size = Pt(15)
+    heading.font.size = Pt(12)
     heading.font.bold = True
-    heading.paragraph_format.space_before = Pt(12)
-    heading.paragraph_format.space_after = Pt(6)
+    heading.paragraph_format.space_before = Pt(14)
+    heading.paragraph_format.space_after = Pt(7)
 
 
 def _add_title(document: Document, text: str) -> None:
     """Add the article title."""
-    paragraph = document.add_paragraph(style="Title")
+    paragraph = document.add_paragraph()
     paragraph.alignment = WD_ALIGN_PARAGRAPH.LEFT
+    paragraph.paragraph_format.space_after = Pt(12)
     run = paragraph.add_run(text)
-    _set_run_font(run, size=20, bold=True)
+    _set_run_font(run, size=15, bold=True)
 
 
 def _add_heading(document: Document, text: str) -> None:
     """Add a Chinese-numbered section heading."""
     paragraph = document.add_paragraph(style="Heading 1")
+    paragraph.paragraph_format.keep_with_next = True
     run = paragraph.add_run(text)
-    _set_run_font(run, size=15, bold=True)
+    _set_run_font(run, size=12, bold=True)
+
+
+def _add_markdown_runs(paragraph: object, text: str, size: float) -> None:
+    """Render the small inline Markdown subset used by smoothwrite."""
+    cursor = 0
+    for match in _INLINE_MARKDOWN_PATTERN.finditer(text):
+        if match.start() > cursor:
+            _set_run_font(paragraph.add_run(text[cursor : match.start()]), size=size)
+        token = match.group(0)
+        if token.startswith("**"):
+            run = paragraph.add_run(token[2:-2])
+            _set_run_font(run, size=size, bold=True)
+        else:
+            run = paragraph.add_run(token[1:-1])
+            _set_run_font(run, size=size)
+            run.italic = True
+        cursor = match.end()
+    if cursor < len(text):
+        _set_run_font(paragraph.add_run(text[cursor:]), size=size)
+
+
+def _configure_cjk_paragraph(paragraph: object) -> None:
+    """Add the East Asian line-layout flags used by the reference DOCX."""
+    properties = paragraph._p.get_or_add_pPr()
+    for tag in (
+        "w:kinsoku",
+        "w:wordWrap",
+        "w:overflowPunct",
+        "w:autoSpaceDE",
+        "w:autoSpaceDN",
+        "w:adjustRightInd",
+        "w:snapToGrid",
+    ):
+        if properties.find(qn(tag)) is None:
+            properties.append(OxmlElement(tag))
 
 
 def _add_body_paragraph(
@@ -80,10 +133,11 @@ def _add_body_paragraph(
 ) -> None:
     """Add a normal article paragraph."""
     paragraph = document.add_paragraph()
+    paragraph.alignment = WD_ALIGN_PARAGRAPH.LEFT
+    _configure_cjk_paragraph(paragraph)
     if indent:
         paragraph.paragraph_format.left_indent = Cm(0.5)
-    run = paragraph.add_run(text)
-    _set_run_font(run, size=9.5 if small else 11)
+    _add_markdown_runs(paragraph, text, size=9.5 if small else 12)
 
 
 def _figure_lookup(figure_plan: FigurePlan) -> dict[str, FigurePlanItem]:
@@ -115,12 +169,7 @@ def _add_figure(
     base_path: Path,
     image_width_cm: float,
 ) -> None:
-    """Add a bold figure marker followed by its image or fallback text."""
-    marker = document.add_paragraph()
-    marker.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    marker_run = marker.add_run(marker_text)
-    _set_run_font(marker_run, size=10.5, bold=True)
-
+    """Add an image followed by a source marker and explanatory caption."""
     figure = figures.get(label.casefold()) or figures.get(source_figure.casefold())
     image_path = _resolve_image_path(figure.image_path if figure else None, base_path)
 
@@ -130,14 +179,26 @@ def _add_figure(
         run = image_paragraph.add_run()
         try:
             run.add_picture(str(image_path), width=Cm(image_width_cm))
-            return
         except Exception:
-            pass
+            image_path = None
+    if image_path is None or not image_path.is_file():
+        fallback = document.add_paragraph()
+        fallback.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = fallback.add_run("[图片未找到，请人工插入]")
+        _set_run_font(run, size=10)
 
-    fallback = document.add_paragraph()
-    fallback.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = fallback.add_run("[图片未找到，请人工插入]")
-    _set_run_font(run, size=10)
+    marker = document.add_paragraph()
+    marker.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    marker.paragraph_format.space_after = Pt(2)
+    marker_run = marker.add_run(marker_text)
+    _set_run_font(marker_run, size=9.5, bold=True)
+    if figure and figure.caption:
+        caption = document.add_paragraph()
+        caption.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        caption.paragraph_format.space_after = Pt(8)
+        caption_run = caption.add_run(figure.caption)
+        _set_run_font(caption_run, size=9)
+        caption_run.font.color.rgb = RGBColor(80, 80, 80)
 
 
 def render_docx(

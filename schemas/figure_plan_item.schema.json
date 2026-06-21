@@ -9,7 +9,8 @@
     "panels": { "type": ["string", "null"], "default": null },
     "placement_after_section": { "type": ["string", "null"], "default": null },
     "reason": { "type": "string" },
-    "image_path": { "type": ["string", "null"], "default": null }
+    "image_path": { "type": ["string", "null"], "default": null },
+    "caption": { "type": ["string", "null"], "default": null }
   },
   "required": ["label", "source_figure", "reason"],
   "additionalProperties": false

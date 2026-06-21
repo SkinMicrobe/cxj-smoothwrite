@@ -16,6 +16,8 @@
     "figure_manifest_json": { "type": ["string", "null"], "default": null },
     "review_notes_md": { "type": ["string", "null"], "default": null },
     "output_manifest_json": { "type": ["string", "null"], "default": null },
+    "reference_article_txt": { "type": ["string", "null"], "default": null },
+    "writing_brief_json": { "type": ["string", "null"], "default": null },
     "review_notes": {
       "type": "array",
       "items": { "type": "string" },

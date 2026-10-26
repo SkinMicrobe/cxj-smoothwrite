@@ -1,138 +1,63 @@
 ---
 name: smoothwrite
-description: Turn a life-science paper PDF into a source-grounded Chinese WeChat research interpretation and editable Word document. Use when Codex needs to read a scientific paper, learn the structure and density of an optional reference DOCX, create a 5,000-7,000-character evidence-led article, select and place paper figures, fact-check claims, and render a publication-oriented DOCX.
+description: 接收用户提供的一篇论文 PDF 和一张期刊截图，按已确认的 SMOOTH 模板、写法和文风，生成对应的可编辑、可离线分享的微信公众号 HTML。适用于“按模板做这篇论文”“PDF和截图生成公众号”“SMOOTH成果推送”及现有推文修改。
+metadata:
+  version: "2.0.1"
 ---
 
 # smoothwrite
 
-## Goal
+## 成品与范围
 
-Generate a substantive Chinese research interpretation, not a summary translation or placeholder. Use Codex itself for planning and writing; use the bundled Python pipeline only for deterministic parsing, figure extraction, validation, and DOCX rendering.
+**固定工作流：用户提供论文 PDF ＋期刊截图 → 阅读论文并按测试稿文风撰写 → 将本篇资料填入现有模板 → 生成对应 HTML。** 这两份资料就是正常任务的输入，不要求用户另写正文、填写 JSON 或重新提供已内置的团队资料。`content.json`、页图和核对记录由代理在内部生成。
 
-## Required workflow
+沿用已确认的蓝橙色模板，交付**可编辑单文件 HTML**；图片、头像、二维码和所有 PDF 页图内嵌，接收者离线用浏览器打开即可看正文、翻页、放大和下载修改稿。默认不是 Word、全文翻译或 2,000–3,000 字长篇解读；用户明确要求其他格式时再调整。
 
-1. Run `prepare` to extract the paper, metadata, figures, reference prose, and writing targets.
-2. Read `writing_brief.json`, `paper_metadata.json`, `parsed_pdf.json`, `figures/figure_manifest.json`, and `reference_article.txt` when present.
-3. Correct metadata against the paper's title page before writing.
-4. Build an evidence map: research gap, methods and sample scale, each result claim, supporting Figure/panel, interpretation, and limitation.
-5. Author `article_plan.json`, `figure_plan.json`, and `article.md` directly. Do not call or accept the legacy fallback writer.
-6. Run `finalize` to validate and render `final.docx`.
-7. Use the documents render workflow to inspect every DOCX page. Revise and re-render until clean.
+默认顺序：**真实期刊头图 → 论文信息 → 橙色竖线团队导语 → 论文概述 → 论文原文 → 通讯作者简介 → 往期推荐 → 课题组介绍**。没有核实的信息不填成事实；缺少可选模块时省略并在核对记录说明。
 
-### Prepare
+每篇替换期刊截图、题名与书目信息、团队导语、概述及完整原文页图；标题与正文重新依据本篇 PDF 撰写。保留已确认的配色、排版、模块顺序和固定课题组介绍。通讯作者与推荐逐篇匹配，不能把 BJD 样例的作者身份、疾病、结论或推荐链接无条件复制到新论文。除非用户要求，不重新设计模板或扩展成运营方案。
 
-```bash
-smoothwrite prepare \
-  --pdf input/paper.pdf \
-  --reference-docx input/reference.docx \
-  --target-word-count 6000 \
-  --target-section-count 7 \
-  --figure-count 6 \
-  --output output/
-```
+## 写作约定
 
-Reference DOCX is optional. If supplied, match its article density, section rhythm, paragraph length, figure cadence, and level of technical explanation. Do not copy claims or wording that do not belong to the target paper.
+- 概述通常约 **800–1,100 个可见字符**，约 3 个内容小节，随信息量调整。纯文字、短段落、少量加粗。用具体结论取代设问铺垫、比喻串场和泛化总结。
+- 标题有吸引力，但核心对象和问题优先。例如本次确认的 `BJD｜健康、湿疹、痤疮：你的皮肤微生物到底在代谢什么？`。它是这篇论文的例子，不是其他论文固定标题；不要自动改回“修复还是促炎”的双面性主题。
+- 发表团队信息放在**概述之前的橙色导语**，不在概述内重复。英文期刊名斜体、不加书名号，缩写保持正体。
+- 推文可统一称“论文”或“学术论文”，无需反复突出“综述”。仍按真实类型使用“梳理、总结、整合”或“发现、验证”；书目元数据保留真实类型，不能把已有研究误写成团队新实验。
+- **不设置 SMOOTH 点评**。默认仅展示已经确认的通讯作者简介，不自动恢复第一作者块、共同牵头作者附注或招聘模块。
+- 新稿先读 [references/writing.md](references/writing.md)。只修改标题、字形或删除模块时，直接修改现有稿及生成源，不重跑整篇写作。
 
-### Agent-authored intermediates
+## 工作流程
 
-Write `article_plan.json` with:
+1. **提取与阅读。** 用户给出论文并要求公众号推文时，用下方 `prepare` 提取完整主文及所有页图。阅读主文、结论、图注和关键图表，核对首页题名、DOI、日期、署名、通讯身份和版本。已有提取结果可复用，不能只读摘要。
+2. **放入用户截图。** 检查截图中的期刊、题名及版本与 PDF 是否对应，将用户提供的原截图写入 `header.image`，等比例排入头图位置，保留期刊标识、题目及版本状态。用户已经给图时不另找封面替换，也不拼造官网截图。以所给两份资料完成本稿，不默认扩展为查找新版、下载其他论文或采集素材；确有资料缺口或冲突时才针对性核对。缺图时先完成其余部分并说明头图待补。
+3. **写稿与证据。** 读取 `examples/bjd-content.json` 和写作约定，沿用已确认测试稿的标题思路、团队导语句式、正文密度与专业表达，依据当前 PDF 写出新内容；不照搬样例结论。由代理直接撰写 `content.json`，不要要求用户填写，也不要使用自动 fallback 正文。每个概述小节提供 PDF 页码证据，记录关键样本量、模型及因果边界。模式见 [references/content-schema.md](references/content-schema.md)。
+4. **渲染。** 默认使用内置 `assets/smooth-profile.json`；其中介绍、联系方式、logo 和二维码是本团队资料，不应自动套到其他团队。通讯作者角色逐篇核实后再选择内置头像和资料。`render` 生成所有可分享文件。
+5. **检查。** 使用 `validate` 核对页数、原文哈希、内嵌图片、章节、证据页码和移除的模块；另逐条核对文字与来源。浏览器工具可用时检查桌面及约390px手机宽度、标题换行、翻页、页码跳转、头图放大、编辑和下载。受限时说明未完成视觉验收，不反复绕过访问限制。
+6. **交付。** 主要交付物就是对应论文的 `preview.html`，给出真实文件链接，说明可单文件发送给教授；内部 JSON、证据表及页图不变成用户额外操作步骤。仅有实际缺口时列出待补项，不因可选作者照片或往期链接缺失阻塞 HTML 生成。不要强制使用“在使用某技能之后……”的固定开场，也不要链接未生成的 DOCX。更新时保持用户正在查看的文件名同步，避免旧文件与新稿并存却未说明。
 
-- a specific title;
-- one-sentence thesis;
-- old model or unresolved gap;
-- new evidence and new understanding;
-- 6-8 short judgment-style sections;
-- the Figure label supporting each section.
+## 脚本
 
-Write `figure_plan.json` using real assets from `figures/figure_manifest.json`. Each item must include:
-
-- `label` such as `配图1`;
-- `source_figure` such as `Fig. 1`;
-- `panels` when known;
-- `placement_after_section`;
-- `reason`;
-- valid `image_path`;
-- a Chinese `caption` explaining what the reader should see and why it supports the argument.
-
-Write `article.md` at the target length. Treat the target as Chinese visible characters with a default tolerance of ±20%.
-
-### Finalize
+Python 依赖仅为 PyMuPDF、Beautiful Soup；先检查现有环境，需要时按 `requirements.txt` 安装到适当隔离环境，不擅自改系统 Python。
 
 ```bash
-smoothwrite finalize --output output/
+# 相对路径均从当前工作目录解析；技能目录可以位于任意位置。
+python3 /path/to/smoothwrite/scripts/smoothwrite.py prepare \
+  --pdf /path/to/paper.pdf --workdir /path/to/work/paper
+
+python3 /path/to/smoothwrite/scripts/smoothwrite.py render \
+  --prepared /path/to/work/paper --content /path/to/content.json \
+  --output /path/to/outputs/paper
+
+python3 /path/to/smoothwrite/scripts/smoothwrite.py validate \
+  --output /path/to/outputs/paper
 ```
 
-The legacy `smoothwrite run` command is only a smoke test for deterministic plumbing. Never use its fallback article as a user deliverable.
+`render --profile other-team.json` 可替换团队资料；输入 JSON 中的素材路径相对各自 JSON 文件解析，便于在不同电脑使用。正文 HTML 和编辑器脚本分开存放于技能模板中，渲染结果保持离线单文件。
 
-## Writing standard
+## 发布边界与现有稿修改
 
-- Audience: life-science and biomedical researchers.
-- Title: `期刊｜研究对象/核心发现：机制概括/意义总结`.
-- Opening sentence: year, month, journal, research team, and italicized English title.
-- Explain why the question mattered before listing results.
-- Organize by evidence and conceptual progression, not paper section order.
-- Give concrete sample sizes, datasets, models, comparisons, or measurements when central to judging evidence.
-- Distinguish demonstrated results, author interpretation, Codex synthesis, and future hypotheses.
-- Use Chinese numbered sections such as `## 一、祖先脑蓝图已经高度区域化`.
-- Use short mobile-friendly paragraphs and numbered evidence points where helpful.
-- Insert each marker on its own line: `配图1｜Fig. 1`.
-- End with limitations, the conceptual advance, paper information, and DOI URL.
-- Remove paper citation numbers and internal tool citations from the article body.
-
-Avoid hype, causal overstatement, generic praise, fabricated mechanism, and phrases such as “本文为流程占位稿” or “仍需人工补充关键证据”.
-
-## Metadata rules
-
-- Prefer DOI and citation information on the article title/summary page.
-- Do not select a DOI found only in references when the article DOI is available.
-- Join wrapped title and author lines.
-- Normalize a confirmed DOI to `https://doi.org/<doi>`.
-- Leave genuinely unconfirmed information explicit in `review_notes.md`; never invent it.
-
-## Figure rules
-
-- Prefer main Figures that support the article's decisive claims.
-- Select panels semantically; do not mechanically choose the first N figures.
-- Keep the figure order aligned with the article argument.
-- Inspect crops. Use a full-page image only as a temporary fallback and disclose it.
-- Captions must interpret the figure for the reader and preserve the source Figure ID.
-
-## Quality gate
-
-Before delivery, verify:
-
-- core conclusions are supported by the paper;
-- associations are not rewritten as causation;
-- quantitative details match the source;
-- limitations and comparison boundaries are retained;
-- no placeholder text remains;
-- article length and section count fit `writing_brief.json`;
-- every marker resolves to the intended image;
-- metadata and DOI are correct;
-- the rendered DOCX has no clipping, overlap, broken images, or awkward page gaps.
-
-## Outputs
-
-The output directory contains:
-
-- `article.md`
-- `final.docx`
-- `parsed_pdf.json`
-- `paper_metadata.json`
-- `article_plan.json`
-- `figure_plan.json`
-- `writing_brief.json`
-- `reference_article.txt` when a reference DOCX was supplied
-- `review_notes.md`
-- `output_manifest.json`
-- `figures/`
-
-## Required final response
-
-Whenever this skill is used, begin the output summary exactly with:
-
-```text
-在使用 smoothwrite skill 之后，我为你输出了：
-```
-
-Then number only the files or directories that actually exist. Link `article.md`, `final.docx`, and `review_notes.md`. State whether the article is Codex-assisted or fallback, whether any figure crop is low confidence, and whether metadata remains uncertain.
+- 原文“横向 PDF”实际是完整 PDF **逐页转图后横向翻阅**，不依赖 iframe、外部 PDF 插件或公众号执行 JavaScript。
+- `body-article.html` 是正文排版素材。浏览器复制效果不等于微信支持翻页；正式导入时需上传图片，并用微信支持的滑动组件或编辑器配置，最后手机预览。详见 [references/delivery.md](references/delivery.md)。
+- 相关论文原文可以做延伸阅读，但不要冒充已存在的历史推文。课题组介绍沿用用户确认的原文，不擅自压缩、更新数字或增加招聘。
+- 局部修改优先保留既有资产及正文；若需重建，确认 `content.json` 与当前人工编辑一致，再覆盖生成文件。模板及已删除模块不应在下一次渲染时复活。
+- 生成推文不代表授权导入后台、群发、发给他人或推送 GitHub。同步目标由用户另行指定。

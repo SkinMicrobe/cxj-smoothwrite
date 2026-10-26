@@ -1,0 +1,4 @@
+interface:
+  display_name: "smoothwrite"
+  short_description: "将论文 PDF 和期刊截图按已确认的 SMOOTH 模板生成公众号 HTML"
+  default_prompt: "使用 $smoothwrite，将我提供的论文 PDF 和期刊截图填入已确认的 SMOOTH 模板，沿用测试稿的写法、文风和信息密度，生成对应的可编辑单文件 HTML。"

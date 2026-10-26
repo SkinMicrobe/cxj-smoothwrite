@@ -4,6 +4,9 @@ __pycache__/
 
 examples/output/
 output/
+outputs/
+work/
+.DS_Store
 
 *.pdf
 *.docx
@@ -11,3 +14,8 @@ output/
 *.jpg
 *.jpeg
 *.log
+
+# Approved reusable brand and author assets belong to the skill.
+!assets/*.png
+!assets/*.jpg
+!assets/*.jpeg

@@ -1,0 +1,36 @@
+{
+  "account_name": "皮肤微生态 SMOOTH",
+  "group": {
+    "brand": "SMOOTH study group",
+    "english_lines": [
+      "Skin & Mucosal Microbes",
+      "Omics-based Total Health"
+    ],
+    "paragraphs": [
+      "皮肤微生态SMOOTH实验室（基于皮肤和粘膜微生态多组学的整体健康研究），依托南方医科大学南方医院整形外科（复旦专科榜全国第2至第3）科研平台，由国家级青年人才王高峰教授和曾东强副教授主持，是聚焦“皮肤微生物组大数据 + 人工智能”的跨学科创新平台。",
+      "团队深耕皮肤健康方向，围绕皮肤微生态与组织再生、屏障功能修复、创面愈合、常见皮肤病机制，以及皮肤柔性材料研发、微生物组大数据挖掘等关键课题持续攻关。目前已建成多个大规模临床研究队列，积累数万例临床样本及高通量测序数据（总规模超1000TB），配备 7 台高性能服务器及全套微生物实验设备，更有专业生物信息学团队提供技术支撑。实验室成立以来，已在Science、Nature、Cell、JAMA等子刊及领域高影响力期刊发表高质量论文，多项重大科研项目正稳步推进。实验室长期诚挚欢迎在大数据分析、微生物研究领域有基础的优秀人才加入，共探皮肤微生态奥秘，助力皮肤健康发展！"
+    ],
+    "website_label": "实验室网站：",
+    "website": "https://skinmicrobe.github.io",
+    "email_label": "联系邮箱：",
+    "email": "wanggaofeng@smu.edu.cn"
+  },
+  "logo": "lab-logo.jpg",
+  "qr": "group-contact-qr.png",
+  "author_profiles": [
+    {
+      "name": "Gaofeng Wang",
+      "aliases": [
+        "王高峰"
+      ],
+      "photo": "gaofeng-wang.png",
+      "bullets": [
+        "南方医科大学南方医院教授、博士生导师。",
+        "研究涉及皮肤微生物与宿主互作、多组学及相关基础与人群研究。"
+      ],
+      "source_url": "https://skinmicrobe.github.io/team/Gaofeng-Wang",
+      "source_note": "公开个人主页资料；是否属于当前论文通讯作者须逐篇核对。"
+    }
+  ],
+  "source_note": "课题组正文由用户于2026-10-25提供并确认。更新时保持原文，除非用户要求改写。"
+}

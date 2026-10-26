@@ -1,105 +1,74 @@
 # cxj-smoothwrite
 
-`cxj-smoothwrite` 是一个面向生命科学论文的 Codex Skill：它把论文 PDF 转换为有证据约束的中文微信公众号科研解读，并生成可编辑、带原论文配图的 Word 文档。
+**smoothwrite v2.0.1**：将用户提供的论文 PDF 和期刊截图，按已确认的皮肤微生态 SMOOTH 模板、写法和文风，制作成可编辑、可离线分享的微信公众号 HTML。
 
-新版不再把本地 fallback 草稿当作最终成品。标准流程分为两个阶段：
+## 使用流程
 
-1. `prepare` 解析论文、提取元信息和 Figure，并分析参考公众号文章。
-2. Codex 基于论文证据完成文章规划、配图方案和实质正文写作。
-3. `finalize` 校验中间产物，渲染 `final.docx`，生成质检报告和输出清单。
+提供两份资料：
 
-## 环境要求
+1. 一篇论文的 PDF。
+2. 一张包含期刊标识、论文标题等信息的期刊页面截图。
 
-- Python 3.10 或更高版本
-- Windows、macOS 或 Linux
-- Codex（用于标准的实质写作阶段）
+在 Codex 中调用：
 
-## 安装
+> 使用 $smoothwrite，把这份 PDF 和期刊截图按 SMOOTH 模板生成对应的 HTML。
+
+Codex 阅读原文，撰写标题、团队导语和高信息密度的论文概述，再将本篇资料放入现有模板。用户无需另写正文、填写 JSON 或重新提供内置团队资料。
+
+主要交付物是 `preview.html`：图片、二维码、完整论文页图及原始 PDF 均内嵌，可单文件发给教授，下载后用电脑浏览器打开，支持文字编辑、原文翻页、放大和保存草稿。
+
+## 模板与文风
+
+默认顺序：期刊头图 → 论文信息 → 团队导语 → 论文概述 → 论文原文 → 通讯作者简介 → 往期推荐 → 课题组介绍。
+
+- 沿用已确认的蓝橙配色与版式，每篇按原文替换内容。
+- 标题突出论文核心对象与具体问题；概述通常约800–1100个可见字符，约3个小节，减少设问铺垫和泛化总结。
+- 英文期刊名使用斜体，不加中文书名号。
+- 保留真实文章类型及证据归属，不把论文梳理的既有研究写成团队新实验。
+- 不设置点评或招聘模块，不自动恢复第一作者模块。
+- 通讯身份、作者简介和推荐逐篇匹配；缺少可选素材时不阻塞 HTML 生成。
+- 固定课题组介绍保留用户确认原文。其他团队应明确提供自己的 profile。
+
+## 安装为 Codex skill
+
+将整个仓库放入本机 Codex 的 skills 目录；默认位置示例：
 
 ```bash
-python -m venv .venv
+git clone https://github.com/SkinMicrobe/cxj-smoothwrite.git ~/.codex/skills/cxj-smoothwrite
+```
+
+已有该目录时，先检查和备份本地修改，再更新；不要直接覆盖未保存的内容。
+
+技能入口是 [`SKILL.md`](SKILL.md)，模板、素材和生成脚本随仓库提供。本版本不再提供旧版 Python 包的 `smoothwrite finalize` / Word 长文流程；旧版保留于 Git 历史。
+
+## 脚本环境与内部步骤
+
+需要 Python 3.9 或更高版本、PyMuPDF 与 Beautiful Soup。可使用已具备依赖的环境，或在仓库中建立隔离环境：
+
+```bash
+python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -e .
-smoothwrite --help
+python -m pip install -r requirements.txt
 ```
 
-Windows PowerShell 激活命令：
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
-
-## 推荐用法
-
-通常直接在 Codex 中调用 Skill，并提供论文 PDF；如有示范公众号 Word 文档，也一并提供。Skill 会自行执行完整流程。
-
-手动执行第一阶段：
+以下是 Codex 使用的内部步骤；脚本负责提取、渲染和结构检查，正文由 Codex 阅读论文后撰写，不自动拼接 fallback 成稿：
 
 ```bash
-smoothwrite prepare \
-  --pdf input/paper.pdf \
-  --reference-docx input/reference.docx \
-  --url "https://doi.org/xxxxx" \
-  --output output/
+python scripts/smoothwrite.py prepare \
+  --pdf /path/to/paper.pdf --workdir work/paper
+
+python scripts/smoothwrite.py render \
+  --prepared work/paper --content work/content.json --output outputs/paper
+
+python scripts/smoothwrite.py validate --output outputs/paper
 ```
 
-`prepare` 会生成论文解析结果、元信息、Figure 资产、参考文章纯文本和写作 brief。Codex 随后据此完成：
+`content.json` 中的 `header.image` 对应用户提供的截图。完整字段见 [`references/content-schema.md`](references/content-schema.md)，已确认的写法见 [`examples/bjd-content.json`](examples/bjd-content.json)。示例不携带论文 PDF 或出版社截图。
 
-- `article_plan.json`
-- `figure_plan.json`
-- `article.md`
+## 交付与发布
 
-完成实质写作后执行：
+除 `preview.html` 外，脚本还生成正文 HTML、文字稿、PDF 页图、书目信息和证据页码表，供后续修改和公众号导入使用。
 
-```bash
-smoothwrite finalize --output output/
-```
+原文横向翻阅通过完整 PDF 逐页转图实现。浏览器预览不等于微信后台支持相同交互；导入时需上传图片、配置平台支持的滑动组件，并做手机预览。生成 HTML 不会自动登录、导入或群发公众号。
 
-`run` 命令仅保留用于本地 smoke test；其 fallback 正文不得作为交付成品：
-
-```bash
-smoothwrite run --pdf input/paper.pdf --output output/
-```
-
-## 输出目录
-
-```text
-output/
-├── parsed_pdf.json
-├── paper_metadata.json
-├── writing_brief.json
-├── reference_article.txt
-├── article_plan.json
-├── figure_plan.json
-├── article.md
-├── final.docx
-├── review_notes.md
-├── output_manifest.json
-└── figures/
-    ├── figure_manifest.json
-    └── Figure_*.png
-```
-
-默认目标为约 6000 字、7 个主体章节和 6 幅配图；实际结构应服从论文论证链和用户提供的参考文章风格。正文必须区分论文直接证据、作者解释和编辑性概括，避免把相关性改写为因果性。
-
-## 主要改进
-
-- 引入 `prepare → Codex 写作 → finalize` 两阶段工作流。
-- 支持从参考 DOCX 提取篇幅、结构和媒体特征。
-- 改进 Science 等期刊 PDF 的标题、作者和 DOI 抽取。
-- 改进跨页 Figure 识别，减少只截到图注或残缺 panel 的情况。
-- Word 使用 A4 中文公众号排版，并支持中文图注和行内 Markdown 样式。
-- 校验正文目标长度、占位符、Figure 引用和必需中间文件。
-- 将运行所需配置与 prompt 打包进 Python wheel，支持非 editable 安装。
-
-## 发布前检查
-
-请优先阅读 `review_notes.md`，并核查：
-
-- 标题、作者、期刊、日期与 DOI。
-- 关键事实、因果表述和结论边界。
-- 图片是否对应正确 Figure，panel 是否完整。
-- `final.docx` 是否存在分页、缺图或文字溢出。
-
-完整工作约束与 Codex 执行规则见 [`SKILL.md`](SKILL.md)。
+自动检查覆盖页数、原文哈希、内嵌图片和模块内容，不能替代科学事实核对或视觉检查。详细交付规则见 [`references/delivery.md`](references/delivery.md)。

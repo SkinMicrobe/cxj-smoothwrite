@@ -2,6 +2,16 @@
 
 **smoothwrite v2.0.1**：将用户提供的论文 PDF 和期刊截图，按已确认的皮肤微生态 SMOOTH 模板、写法和文风，制作成可编辑、可离线分享的微信公众号 HTML。
 
+## 留空模板
+
+**[下载可编辑的留空 HTML 模板](https://github.com/SkinMicrobe/cxj-smoothwrite/raw/refs/heads/main/examples/blank-template/preview.html)** · [查看模板文件](examples/blank-template/preview.html)
+
+下载后用电脑浏览器打开，点击“编辑文字”填写内容，完成后下载草稿保存。期刊截图、论文信息、导语、概述、原文页图、通讯作者及团队资料均留有占位位置；原文区的3页是版式示意，不是论文内容。正式制稿时，提供 PDF 和期刊截图，由 skill 完成替换和写作。
+
+下图是留空模板的实际页面预览：
+
+<img src="examples/blank-template/preview.png" alt="SMOOTH 公众号留空模板：期刊截图、论文信息、团队导语、论文概述、论文原文、通讯作者、往期推荐和课题组介绍" width="438">
+
 ## 使用流程
 
 提供两份资料：

@@ -24,3 +24,4 @@ work/
 !examples/bjd-ljag463/assets/*.png
 !examples/bjd-ljag463/assets/*.jpg
 !examples/bjd-ljag463/assets/paper-pages/*.jpg
+!examples/blank-template/preview.png

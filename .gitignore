@@ -19,3 +19,8 @@ work/
 !assets/*.png
 !assets/*.jpg
 !assets/*.jpeg
+
+# Approved complete HTML example and its companion images.
+!examples/bjd-ljag463/assets/*.png
+!examples/bjd-ljag463/assets/*.jpg
+!examples/bjd-ljag463/assets/paper-pages/*.jpg

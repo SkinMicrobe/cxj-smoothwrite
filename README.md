@@ -19,6 +19,19 @@ Codex 阅读原文，撰写标题、团队导语和高信息密度的论文概�
 
 ## 模板与文风
 
+### 已确认的完整范文
+
+仓库内保留了实际测试并确认的 BJD 推文，供查看排版和学习文风：
+
+- **[下载可编辑 HTML 成品](https://github.com/SkinMicrobe/cxj-smoothwrite/raw/refs/heads/main/examples/bjd-ljag463/preview.html)**：下载后用电脑浏览器打开。正文、期刊截图、头像、二维码、49页原文图片和原始 PDF 均内嵌，可单文件离线使用。GitHub 文件页本身不渲染 HTML。
+- [阅读文字范文](examples/bjd-ljag463/article.md)：已确认的标题、团队导语和概述。
+- [查看配套图片](examples/bjd-ljag463/assets)：真实期刊头图、团队 logo、作者照片、二维码及全部原文页图。
+- [查看模板源文件](assets/preview-template.html)与[范文内容 JSON](examples/bjd-content.json)：用于理解模板和制作新稿。
+
+完整范文沿用已确认页面；仅将原来的相对 PDF 下载链接改为内嵌数据，便于单文件分享。`examples/bjd-content.json` 是生成脚本的字段和写法示例，完整成品以本节 HTML 为准。新论文沿用版式及文风，不能照抄该文的研究结论或作者身份。
+
+![BJD 范文期刊头图](examples/bjd-ljag463/assets/bjd-official-article-header.png)
+
 默认顺序：期刊头图 → 论文信息 → 团队导语 → 论文概述 → 论文原文 → 通讯作者简介 → 往期推荐 → 课题组介绍。
 
 - 沿用已确认的蓝橙配色与版式，每篇按原文替换内容。
@@ -63,7 +76,7 @@ python scripts/smoothwrite.py render \
 python scripts/smoothwrite.py validate --output outputs/paper
 ```
 
-`content.json` 中的 `header.image` 对应用户提供的截图。完整字段见 [`references/content-schema.md`](references/content-schema.md)，已确认的写法见 [`examples/bjd-content.json`](examples/bjd-content.json)。示例不携带论文 PDF 或出版社截图。
+`content.json` 中的 `header.image` 对应用户提供的截图。完整字段见 [`references/content-schema.md`](references/content-schema.md)，写法及字段示例见 [`examples/bjd-content.json`](examples/bjd-content.json)。完整 HTML 范文与真实期刊截图见上方“已确认的完整范文”；处理新论文时使用用户提供的 PDF 和截图。
 
 ## 交付与发布
 

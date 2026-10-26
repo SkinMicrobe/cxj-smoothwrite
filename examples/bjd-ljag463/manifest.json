@@ -1,0 +1,285 @@
+{
+  "description": "Approved BJD HTML and companion sample assets. Only the original relative PDF download link was embedded for portability.",
+  "title": "BJD｜健康、湿疹、痤疮：你的皮肤微生物到底在代谢什么？",
+  "source_pdf_sha256": "21f6bd3197cfeb186ee25374e24fba1010e90691e112966d3240c622759bb1f3",
+  "source_pdf_pages": 49,
+  "article_dom_unchanged": true,
+  "visual_check": "Not rerun; approved original layout retained.",
+  "files": [
+    {
+      "path": "article.md",
+      "bytes": 3510,
+      "sha256": "ea5670547ec0adebd75384171cc791f3dced9abb3d0282fbc84d25c2bf1d3de2"
+    },
+    {
+      "path": "assets/bjd-official-article-header.png",
+      "bytes": 263816,
+      "sha256": "2ee05f6274fb6e73b0477b6ea652c99b24a61fdf6e6c84d8e9b31c77dd2cffd7"
+    },
+    {
+      "path": "assets/gaofeng-wang.png",
+      "bytes": 735227,
+      "sha256": "bb6150537002c82734cc2025a0357b2b62036a2c4d380b0ebd4e814abafb7333"
+    },
+    {
+      "path": "assets/group-contact-qr.png",
+      "bytes": 10516,
+      "sha256": "ac5b8bfcd1c0c4761fc680531c8fa82889f0ae3ab3434a26a94f7e1c6989a475"
+    },
+    {
+      "path": "assets/lab-logo.jpg",
+      "bytes": 35373,
+      "sha256": "b7c53ab80e6759040c4633c8d5e1db72cf2082c5c95cfff778e17374fd8d45a9"
+    },
+    {
+      "path": "assets/paper-pages/page-001.jpg",
+      "bytes": 411613,
+      "sha256": "c6978b7488d55a4157c332694f19ddfc5a440736592aa00bdb844ae19e767ed7"
+    },
+    {
+      "path": "assets/paper-pages/page-002.jpg",
+      "bytes": 357031,
+      "sha256": "b04713c001a8c90e528f99984ad00585b88d9e94fdf37689d0b24549082f0bd2"
+    },
+    {
+      "path": "assets/paper-pages/page-003.jpg",
+      "bytes": 559285,
+      "sha256": "0bbc98aa0d6f17266ed84cc334e8c2920d3a3d11c85a335a56f5191e215e42ff"
+    },
+    {
+      "path": "assets/paper-pages/page-004.jpg",
+      "bytes": 522237,
+      "sha256": "240961d54d0eec8dc6b2a3b787c93cf7ece10f0a2011fa53a4b6076eb710e5fa"
+    },
+    {
+      "path": "assets/paper-pages/page-005.jpg",
+      "bytes": 583153,
+      "sha256": "dc6f03ee70945065b59c51afe2df62b157464edb638d9db96979e4516f7a461e"
+    },
+    {
+      "path": "assets/paper-pages/page-006.jpg",
+      "bytes": 483000,
+      "sha256": "db2a7e1af2a42f4df0690c22eb73a88286f59624704909efe64f6bcbffcb13bf"
+    },
+    {
+      "path": "assets/paper-pages/page-007.jpg",
+      "bytes": 586215,
+      "sha256": "f96da8385b9d4f93fcf3493d5819438efa92a6ba361bcc10179aeeacc55201e8"
+    },
+    {
+      "path": "assets/paper-pages/page-008.jpg",
+      "bytes": 443080,
+      "sha256": "4ac43d8032f92618641c76f94b71296464400546d2a510e710ddd92ab62a3c11"
+    },
+    {
+      "path": "assets/paper-pages/page-009.jpg",
+      "bytes": 213809,
+      "sha256": "d8e5e92d4c8998df223d05b0f58cf122eb26a1797968b3e91eee820ee2e8fc98"
+    },
+    {
+      "path": "assets/paper-pages/page-010.jpg",
+      "bytes": 510402,
+      "sha256": "c6c44d5650890aa1617058a79b9a28a2b7d9cd21bc7938992fb27dde55b8b6ef"
+    },
+    {
+      "path": "assets/paper-pages/page-011.jpg",
+      "bytes": 484844,
+      "sha256": "fbc0eeb20c79d6bb2abf61c2a73c7278d5da7c07e3f25497b8c9252df709a55c"
+    },
+    {
+      "path": "assets/paper-pages/page-012.jpg",
+      "bytes": 514695,
+      "sha256": "34c8e378d8aaea8e4b24eb231544bbb2cc218698d7a09e0b85015929596affe8"
+    },
+    {
+      "path": "assets/paper-pages/page-013.jpg",
+      "bytes": 616285,
+      "sha256": "059dc73106b94004bfc501b007f6970bb6eb75c15d7fb1e8c3ef624f7d863224"
+    },
+    {
+      "path": "assets/paper-pages/page-014.jpg",
+      "bytes": 561752,
+      "sha256": "0621d38808428de3205ed0552336761f29607609ecdc0b921de1cefd21320642"
+    },
+    {
+      "path": "assets/paper-pages/page-015.jpg",
+      "bytes": 551496,
+      "sha256": "0db368187a2e4ad29f79e9993126a06cf1af4459333cb131dc8371fb60e68980"
+    },
+    {
+      "path": "assets/paper-pages/page-016.jpg",
+      "bytes": 607609,
+      "sha256": "bc86f5823f740992aaf200e4829114217622fbeb78c8d9842fd6f7011cda4203"
+    },
+    {
+      "path": "assets/paper-pages/page-017.jpg",
+      "bytes": 440991,
+      "sha256": "cf0030fdcc75c9c4d1f32b2d4372fc0ff979d7b28d9fb74591dbc7816bff09c9"
+    },
+    {
+      "path": "assets/paper-pages/page-018.jpg",
+      "bytes": 467533,
+      "sha256": "002fa2a9f1b435c7bcdad131aa53207ff5450165139f6f19163671ce87153f04"
+    },
+    {
+      "path": "assets/paper-pages/page-019.jpg",
+      "bytes": 459262,
+      "sha256": "bd72497ee22f9d830c2fbfd9a474417f2e7872edc46d95333a484354f10b45fd"
+    },
+    {
+      "path": "assets/paper-pages/page-020.jpg",
+      "bytes": 461072,
+      "sha256": "a23fa0710466f6fc73052ecb9f7d742f33036e3999be8718c4c07cd6c82b5956"
+    },
+    {
+      "path": "assets/paper-pages/page-021.jpg",
+      "bytes": 491793,
+      "sha256": "3ec8aa4bb81a7832a7e2b3b3dbf8dca7492e88d915fac4ce8f6c2a657189a564"
+    },
+    {
+      "path": "assets/paper-pages/page-022.jpg",
+      "bytes": 460389,
+      "sha256": "47eb49480eac4a4f67b070887fa7af2c3375312a1a99fe49293968ce496dfe09"
+    },
+    {
+      "path": "assets/paper-pages/page-023.jpg",
+      "bytes": 485377,
+      "sha256": "a6f80c5f1ff580bca945848f03d733832ba0af0e0f9afda917f685cf93f3848a"
+    },
+    {
+      "path": "assets/paper-pages/page-024.jpg",
+      "bytes": 492216,
+      "sha256": "87cdb982529548863f31ebb2651784bb82cc1ede0522249030894fa577e5864f"
+    },
+    {
+      "path": "assets/paper-pages/page-025.jpg",
+      "bytes": 493900,
+      "sha256": "ae009cb130fe0b00db47eca89fd9a0bd51ac99b97625e96b73b0af8635245b64"
+    },
+    {
+      "path": "assets/paper-pages/page-026.jpg",
+      "bytes": 489568,
+      "sha256": "2dc9744d20a9e018670cf24b61e609a8d702f08b9fd32c12b00262e5e6cc8a98"
+    },
+    {
+      "path": "assets/paper-pages/page-027.jpg",
+      "bytes": 464697,
+      "sha256": "e49bf82a12ea291d8bf776bf912e0154e6c5bb7fd4ef8fd88d2b5cef9e61a7b4"
+    },
+    {
+      "path": "assets/paper-pages/page-028.jpg",
+      "bytes": 473373,
+      "sha256": "22698121173f79000ec99308006c8df4d970e7d9a2d719222aa49bcf7f9a3cdd"
+    },
+    {
+      "path": "assets/paper-pages/page-029.jpg",
+      "bytes": 488189,
+      "sha256": "a849aaf0a2364d809e5b49f52d40769500b00a48a67ea584c443c2420dbd27b4"
+    },
+    {
+      "path": "assets/paper-pages/page-030.jpg",
+      "bytes": 469808,
+      "sha256": "5ce07c5499aa725428e93ad7e1360bc53d6ae6ebe367b5ef2b59677f2924dd3a"
+    },
+    {
+      "path": "assets/paper-pages/page-031.jpg",
+      "bytes": 458249,
+      "sha256": "daeee8ecee0f1cc29521fcc77b27f9a7f99de5018f498a420f6c9cb81b13fdc7"
+    },
+    {
+      "path": "assets/paper-pages/page-032.jpg",
+      "bytes": 481652,
+      "sha256": "7993c2af12db18d2e08a8918eb427c4f900429f2dd59195c8dda73a3aa2eb7cd"
+    },
+    {
+      "path": "assets/paper-pages/page-033.jpg",
+      "bytes": 457249,
+      "sha256": "7029a3d77573f53fe7ffb569ac1fecedefdeef5c85db821a3f81e59d2e1dbfcd"
+    },
+    {
+      "path": "assets/paper-pages/page-034.jpg",
+      "bytes": 461620,
+      "sha256": "82c2918d865e086926d7da7ed8fb6e5f2449e593732ef5cbdca050f48a534455"
+    },
+    {
+      "path": "assets/paper-pages/page-035.jpg",
+      "bytes": 451435,
+      "sha256": "6083b13bacb835d01f57c5ee81eb76f63170f57ccafe5c869257f736eeb3a23c"
+    },
+    {
+      "path": "assets/paper-pages/page-036.jpg",
+      "bytes": 488519,
+      "sha256": "16b261340a1a0dc798a24eee474e5767a54fe09126c1c547d4ed70e0a9495677"
+    },
+    {
+      "path": "assets/paper-pages/page-037.jpg",
+      "bytes": 480292,
+      "sha256": "a646f36f4ac29b438eb8591983e46d11b53380b18641a6e644c320be5d8ca022"
+    },
+    {
+      "path": "assets/paper-pages/page-038.jpg",
+      "bytes": 257785,
+      "sha256": "787e5d65db3d0ea7c73f652da0f18dcb2f168955013334a2a04fe39a3c53cfc1"
+    },
+    {
+      "path": "assets/paper-pages/page-039.jpg",
+      "bytes": 154057,
+      "sha256": "3d4a4790657e1255a5cd9f7ee089a2c9f9f71f4fd0ec4a8e3708a03e0919585d"
+    },
+    {
+      "path": "assets/paper-pages/page-040.jpg",
+      "bytes": 122357,
+      "sha256": "09d801a4c9775b494e398adf9a136ccbb96f48b92a9cd7dcca85366f69703945"
+    },
+    {
+      "path": "assets/paper-pages/page-041.jpg",
+      "bytes": 132080,
+      "sha256": "2cf0d671f5b319876964b9f946d9185ffce24e0656c9bedb11889911e21c48b9"
+    },
+    {
+      "path": "assets/paper-pages/page-042.jpg",
+      "bytes": 162746,
+      "sha256": "686ff403dbade94ef165a357495f84b3baf58eb5556c41dc809f67939bad29fa"
+    },
+    {
+      "path": "assets/paper-pages/page-043.jpg",
+      "bytes": 165786,
+      "sha256": "20a8b941ae1229ff12165eb6057c1e12dd0e6b3e5da6fc5e8b43999d018bd184"
+    },
+    {
+      "path": "assets/paper-pages/page-044.jpg",
+      "bytes": 162577,
+      "sha256": "cdcb11863dfeea2179032e75cd07801ef0e554b54aa8b13916f7cfeafca2bf3a"
+    },
+    {
+      "path": "assets/paper-pages/page-045.jpg",
+      "bytes": 142955,
+      "sha256": "6493b0cb4209b2f0835902d3da247bc139ef99a2cccbc7cae78477825c24e4fe"
+    },
+    {
+      "path": "assets/paper-pages/page-046.jpg",
+      "bytes": 131942,
+      "sha256": "6e6aef4a8a308b6d7e1d4a7cd5f88001f26be312181be4ff6b0f05e2abcf77eb"
+    },
+    {
+      "path": "assets/paper-pages/page-047.jpg",
+      "bytes": 198443,
+      "sha256": "bdb9d265b04ac7497fde149737f0e8df55af1c0d3378dac0aee8ecc265fde8b2"
+    },
+    {
+      "path": "assets/paper-pages/page-048.jpg",
+      "bytes": 265092,
+      "sha256": "02ce5e0898b9dcfc91429804125070ff19d5d7a59ced0c54af527e990aed0f22"
+    },
+    {
+      "path": "assets/paper-pages/page-049.jpg",
+      "bytes": 211039,
+      "sha256": "79ceca85e55ba6d9b0369f9b65a3ab62a678628bb5d9751c8a8a7e1298e99d61"
+    },
+    {
+      "path": "preview.html",
+      "bytes": 30049002,
+      "sha256": "45344d6a3c3b24b181a375f4292f7b111a2995fed24638f8cb8399ee31c96f17"
+    }
+  ]
+}

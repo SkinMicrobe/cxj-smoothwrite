@@ -1,0 +1,37 @@
+{
+  "title": "【期刊缩写】｜【论文中文标题】",
+  "paper": {
+    "english_title": "【论文英文标题】",
+    "journal": "【期刊全称】",
+    "journal_abbrev": "【期刊缩写】",
+    "published": "【发表日期】",
+    "authors_short": "【第一作者 et al.】",
+    "doi": "【DOI】",
+    "url": "https://doi.org/",
+    "article_type": "【文章类型】",
+    "version_label": "【版本】"
+  },
+  "lead": "【日期】，【单位】【团队】联合【合作单位】，在【领域】期刊 *【期刊全称】*（【缩写】）发表论文，【梳理/发现】……，并【总结/提出】……。",
+  "overview": [
+    {"heading": "01｜【小节标题】", "paragraphs": ["【首段：直接交代对象、条件与结论，约 50–120 字。】", "**【加粗要点。】** 【展开说明，交代模型、人群或证据边界。】"]},
+    {"heading": "02｜【小节标题】", "paragraphs": ["**【加粗要点。】** 【展开说明。】", "**【加粗要点。】** 【展开说明。】"]},
+    {"heading": "03｜【小节标题】", "paragraphs": ["**【加粗要点。】** 【转化意义或局限。】"]}
+  ],
+  "header": {"image": "assets/journal-header.jpg", "caption": "期刊官网页面截图 · 【版本】", "alt": "期刊截图占位"},
+  "figures": [
+    {"label": "Figure 1", "image": "assets/figure-1.jpg", "pages": [1], "title_zh": "【图 1 中文标题】", "description_zh": "【依据 Figure legend 翻译的中文说明。】", "caption_en": "【English figure title.】"},
+    {"label": "Figure 2", "image": "assets/figure-2.jpg", "pages": [1], "title_zh": "【图 2 中文标题】", "description_zh": "【中文说明。】", "caption_en": "【English figure title.】"},
+    {"label": "Figure 3", "image": "assets/figure-3.jpg", "pages": [1], "title_zh": "【图 3 中文标题】", "description_zh": "【中文说明。】", "caption_en": "【English figure title.】"}
+  ],
+  "figure_source": "图片来源：【第一作者】, et al. *【期刊缩写】* 【年份】. DOI: 【DOI】 · 点击图片可放大",
+  "recommendations": [
+    {"title": "【往期推文或相关论文标题 1】", "kind": "公众号推文", "meta": "【日期或期刊 · 年份】", "reason": "【与本文的具体关联。】", "url": "https://mp.weixin.qq.com/"},
+    {"title": "【往期推文或相关论文标题 2】", "kind": "相关论文", "meta": "【期刊 · 年份】", "reason": "【与本文的具体关联。】", "url": "https://doi.org/"}
+  ],
+  "evidence": [
+    {"section": 1, "claim": "占位", "pages": [1]},
+    {"section": 2, "claim": "占位", "pages": [1]},
+    {"section": 3, "claim": "占位", "pages": [1]}
+  ],
+  "review_notes": ["留空模板：所有【括号内容】与占位图均需替换。"]
+}

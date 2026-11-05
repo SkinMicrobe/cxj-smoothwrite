@@ -17,20 +17,5 @@
   },
   "logo": "lab-logo.jpg",
   "qr": "group-contact-qr.png",
-  "author_profiles": [
-    {
-      "name": "Gaofeng Wang",
-      "aliases": [
-        "王高峰"
-      ],
-      "photo": "gaofeng-wang.png",
-      "bullets": [
-        "南方医科大学南方医院教授、博士生导师。",
-        "研究涉及皮肤微生物与宿主互作、多组学及相关基础与人群研究。"
-      ],
-      "source_url": "https://skinmicrobe.github.io/team/Gaofeng-Wang",
-      "source_note": "公开个人主页资料；是否属于当前论文通讯作者须逐篇核对。"
-    }
-  ],
   "source_note": "课题组正文由用户于2026-10-25提供并确认。更新时保持原文，除非用户要求改写。"
 }

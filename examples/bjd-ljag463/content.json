@@ -8,7 +8,8 @@
     "doi": "10.1093/bjd/ljag463",
     "url": "https://doi.org/10.1093/bjd/ljag463",
     "article_type": "Review",
-    "version_label": "Accepted manuscript"
+    "version_label": "Accepted manuscript",
+    "journal_abbrev": "Br J Dermatol"
   },
   "lead": "2026年10月15日，南方医科大学南方医院王高峰团队联合约翰霍普金斯大学等机构，在皮肤病学期刊 *British Journal of Dermatology*（BJD）发表论文，系统梳理皮肤微生物代谢在屏障维持、炎症调控及皮肤疾病中的作用，并总结代谢标志物与微生态干预的研究进展。",
   "overview": [
@@ -39,35 +40,59 @@
     }
   ],
   "header": {
-    "image": null,
+    "image": "assets/bjd-official-article-header.png",
     "caption": "期刊官网页面截图 · Accepted Manuscript",
+    "alt": "BJD 期刊官网论文页截图，含期刊标识、英文标题、作者及 Accepted Manuscript 标记",
     "source_url": "https://academic.oup.com/bjd/advance-article-abstract/doi/10.1093/bjd/ljag463/8916724"
   },
-  "authors": [
+  "figures": [
     {
-      "name": "Gaofeng Wang",
-      "role": "通讯作者",
-      "profile_name": "Gaofeng Wang",
-      "bullets": [
-        "南方医科大学南方医院教授、博士生导师。",
-        "研究涉及皮肤微生物与宿主互作、多组学及相关基础与人群研究。"
+      "label": "Figure 1",
+      "image": "assets/figures/figure-1.jpg",
+      "pages": [
+        47,
+        37
       ],
-      "source_url": "https://skinmicrobe.github.io/team/Gaofeng-Wang"
+      "title_zh": "皮肤微生物来源代谢物参与宿主皮肤生理概览",
+      "description_zh": "皮肤微生物通过微生物酶深度参与皮肤表面代谢，广泛介导微生物组与宿主之间的物质和信息交换。微生物逐步进化出以酶促方式修饰、转化、代谢乃至合成代谢物分子的能力，进而调控宿主皮肤健康。",
+      "caption_en": "Overview of skin microbial-derived metabolites involved in host skin physiology."
+    },
+    {
+      "label": "Figure 2",
+      "image": "assets/figures/figure-2.jpg",
+      "pages": [
+        48,
+        38
+      ],
+      "title_zh": "各类皮肤菌群来源代谢物的代谢过程及其对皮肤生理的影响",
+      "description_zh": "皮肤微生物参与 (a) 脂质、(b) 蛋白质/氨基酸、(c) 碳水化合物与维生素、(d) 挥发性有机物（VOCs）等物质的代谢转化，并影响皮肤生理。",
+      "caption_en": "Metabolic processes of various types of skin microbiota-derived metabolites and their effects on skin physiology."
+    },
+    {
+      "label": "Figure 3",
+      "image": "assets/figures/figure-3.jpg",
+      "pages": [
+        49,
+        38
+      ],
+      "title_zh": "皮肤微生物组及其代谢物的未来应用",
+      "description_zh": "(a) 微生物组与代谢组分析的联合预测可作为疾病诊断和预测的生物标志物；(b) 移植皮肤菌群及其来源代谢物用于疾病治疗；(c) 工程化皮肤微生物用于疾病治疗。",
+      "caption_en": "Future applications of the skin microbiome and its metabolites."
     }
   ],
   "recommendations": [
     {
       "title": "褪黑素与皮肤菌群来源丙酸的机制研究",
       "kind": "相关论文",
-      "meta": "JACI · 2025",
-      "reason": "与短链脂肪酸代谢部分衔接，研究涉及动物模型与细胞实验。",
+      "meta_label": "团队相关论文原文 · JACI · 2025",
+      "reason": "与本论文中的短链脂肪酸代谢部分衔接，研究涉及动物模型与细胞实验。",
       "url": "https://doi.org/10.1016/j.jaci.2024.11.019"
     },
     {
       "title": "共生微生物如何调节疾病中的皮肤细胞",
       "kind": "相关论文",
-      "meta": "Cell Host & Microbe · 2024",
-      "reason": "从微生物与宿主细胞互作的角度延伸阅读。",
+      "meta_label": "团队相关论文原文 · Cell Host & Microbe · 2024",
+      "reason": "从微生物与宿主细胞互作的角度延伸阅读，连接屏障与组织微环境。",
       "url": "https://doi.org/10.1016/j.chom.2024.07.020"
     }
   ],
@@ -111,7 +136,8 @@
     }
   ],
   "review_notes": [
-    "本例为已确认短版的写作示例；技能包不携带论文PDF或出版社截图。",
-    "推荐区为相关论文原文，并非已存在的公众号推文。"
+    "本例为已确认的最终版（论文图示横滑 + 往期推荐，无作者简介）。技能包不携带论文 PDF。",
+    "Figure 1–3 由 prepare 从 PDF 内嵌原图提取，无水印与行号；中文图题依据第37–38页 Figure legends 翻译。",
+    "往期推荐为团队相关论文原文，并非已存在的公众号推文。"
   ]
 }

@@ -1,63 +1,72 @@
 ---
 name: smoothwrite
-description: 接收用户提供的一篇论文 PDF 和一张期刊截图，按已确认的 SMOOTH 模板、写法和文风，生成对应的可编辑、可离线分享的微信公众号 HTML。适用于“按模板做这篇论文”“PDF和截图生成公众号”“SMOOTH成果推送”及现有推文修改。
+description: 接收用户提供的一篇论文 PDF 和一张期刊截图，按已确认的 SMOOTH 蓝橙模板、写法和文风，生成可编辑、可离线分享、可一键复制粘贴进微信公众号编辑器的 HTML。适用于“按模板做这篇论文”“PDF和截图生成公众号”“SMOOTH成果推送”及现有推文修改。
 metadata:
-  version: "2.0.1"
+  version: "3.0.0"
 ---
 
 # smoothwrite
 
 ## 成品与范围
 
-**固定工作流：用户提供论文 PDF ＋期刊截图 → 阅读论文并按测试稿文风撰写 → 将本篇资料填入现有模板 → 生成对应 HTML。** 这两份资料就是正常任务的输入，不要求用户另写正文、填写 JSON 或重新提供已内置的团队资料。`content.json`、页图和核对记录由代理在内部生成。
+**固定工作流：用户提供论文 PDF ＋期刊截图（＋可选的往期推文链接）→ 阅读论文并按范文文风撰写 → 从 PDF 提取 Fig → 渲染单文件 HTML → 用户点“复制到公众号”直接粘贴。** 不要求用户另写正文、填写 JSON 或重新提供已内置的团队资料；`content.json`、图片和核对记录由代理在内部生成。
 
-沿用已确认的蓝橙色模板，交付**可编辑单文件 HTML**；图片、头像、二维码和所有 PDF 页图内嵌，接收者离线用浏览器打开即可看正文、翻页、放大和下载修改稿。默认不是 Word、全文翻译或 2,000–3,000 字长篇解读；用户明确要求其他格式时再调整。
+交付**可编辑单文件 `preview.html`**：所有图片内嵌，接收者离线用电脑浏览器打开即可阅读、编辑、放大图片、下载草稿；左侧“复制到公众号”按钮输出微信编辑器能保留的正文。默认不是 Word、全文翻译或长篇解读。
 
-默认顺序：**真实期刊头图 → 论文信息 → 橙色竖线团队导语 → 论文概述 → 论文原文 → 通讯作者简介 → 往期推荐 → 课题组介绍**。没有核实的信息不填成事实；缺少可选模块时省略并在核对记录说明。
+**固定模块顺序（v3 最终版）：期刊截图 → 论文信息 → 橙色竖线团队导语 → 论文概述 → 论文图示（Fig 横滑）→ 往期推荐 → 关于课题组。**
 
-每篇替换期刊截图、题名与书目信息、团队导语、概述及完整原文页图；标题与正文重新依据本篇 PDF 撰写。保留已确认的配色、排版、模块顺序和固定课题组介绍。通讯作者与推荐逐篇匹配，不能把 BJD 样例的作者身份、疾病、结论或推荐链接无条件复制到新论文。除非用户要求，不重新设计模板或扩展成运营方案。
+- **没有作者简介模块**（已由用户删除）；`content.json` 出现 `authors` 时脚本会报错，不得恢复。
+- **不再嵌入 PDF 逐页页图**。原文区改为“论文图示”：Fig 1、Fig 2……按顺序排成横向滑动卡片，每张卡片含图、中文图题、中文说明、英文原题。
+- **往期推荐是模板固定模块**。用户给了往期推文链接就用；没给时用已核实的团队相关论文（标“相关论文原文”），并在交付时提醒用户可替换为公众号往期推文链接；确实没有素材才省略。
+- 不设置 SMOOTH 点评、招聘或第一作者模块。除非用户要求，不重新设计模板。
 
 ## 写作约定
 
-- 概述通常约 **800–1,100 个可见字符**，约 3 个内容小节，随信息量调整。纯文字、短段落、少量加粗。用具体结论取代设问铺垫、比喻串场和泛化总结。
-- 标题有吸引力，但核心对象和问题优先。例如本次确认的 `BJD｜健康、湿疹、痤疮：你的皮肤微生物到底在代谢什么？`。它是这篇论文的例子，不是其他论文固定标题；不要自动改回“修复还是促炎”的双面性主题。
-- 发表团队信息放在**概述之前的橙色导语**，不在概述内重复。英文期刊名斜体、不加书名号，缩写保持正体。
-- 推文可统一称“论文”或“学术论文”，无需反复突出“综述”。仍按真实类型使用“梳理、总结、整合”或“发现、验证”；书目元数据保留真实类型，不能把已有研究误写成团队新实验。
-- **不设置 SMOOTH 点评**。默认仅展示已经确认的通讯作者简介，不自动恢复第一作者块、共同牵头作者附注或招聘模块。
-- 新稿先读 [references/writing.md](references/writing.md)。只修改标题、字形或删除模块时，直接修改现有稿及生成源，不重跑整篇写作。
+- 概述通常约 **800–1,100 个可见字符**，约 3 个小节；纯文字、短段落、少量加粗；用具体结论取代设问铺垫和泛化总结。
+- 标题有吸引力，但核心对象和问题优先。已确认例子：`BJD｜健康、湿疹、痤疮：你的皮肤微生物到底在代谢什么？`（仅为例子，每篇重新确定关键词）。
+- 发表团队信息放在**概述之前的橙色导语**，不在概述内重复。英文期刊名斜体、不加书名号，缩写正体。
+- 推文统称“论文”；按真实类型使用“梳理、总结”或“发现、验证”，不把综述中引用的既有研究写成团队新实验。
+- 图题：中文标题＋中文说明依据 PDF 的 Figure legends 忠实翻译，不扩写结论；英文原题保留 legend 第一句。
+- 新稿先读 [references/writing.md](references/writing.md)。只改标题、字句或删模块时，直接改现有稿及 `content.json`，不重跑整篇写作。
 
 ## 工作流程
 
-1. **提取与阅读。** 用户给出论文并要求公众号推文时，用下方 `prepare` 提取完整主文及所有页图。阅读主文、结论、图注和关键图表，核对首页题名、DOI、日期、署名、通讯身份和版本。已有提取结果可复用，不能只读摘要。
-2. **放入用户截图。** 检查截图中的期刊、题名及版本与 PDF 是否对应，将用户提供的原截图写入 `header.image`，等比例排入头图位置，保留期刊标识、题目及版本状态。用户已经给图时不另找封面替换，也不拼造官网截图。以所给两份资料完成本稿，不默认扩展为查找新版、下载其他论文或采集素材；确有资料缺口或冲突时才针对性核对。缺图时先完成其余部分并说明头图待补。
-3. **写稿与证据。** 读取 `examples/bjd-content.json` 和写作约定，沿用已确认测试稿的标题思路、团队导语句式、正文密度与专业表达，依据当前 PDF 写出新内容；不照搬样例结论。由代理直接撰写 `content.json`，不要要求用户填写，也不要使用自动 fallback 正文。每个概述小节提供 PDF 页码证据，记录关键样本量、模型及因果边界。模式见 [references/content-schema.md](references/content-schema.md)。
-4. **渲染。** 默认使用内置 `assets/smooth-profile.json`；其中介绍、联系方式、logo 和二维码是本团队资料，不应自动套到其他团队。通讯作者角色逐篇核实后再选择内置头像和资料。`render` 生成所有可分享文件。
-5. **检查。** 使用 `validate` 核对页数、原文哈希、内嵌图片、章节、证据页码和移除的模块；另逐条核对文字与来源。浏览器工具可用时检查桌面及约390px手机宽度、标题换行、翻页、页码跳转、头图放大、编辑和下载。受限时说明未完成视觉验收，不反复绕过访问限制。
-6. **交付。** 主要交付物就是对应论文的 `preview.html`，给出真实文件链接，说明可单文件发送给教授；内部 JSON、证据表及页图不变成用户额外操作步骤。仅有实际缺口时列出待补项，不因可选作者照片或往期链接缺失阻塞 HTML 生成。不要强制使用“在使用某技能之后……”的固定开场，也不要链接未生成的 DOCX。更新时保持用户正在查看的文件名同步，避免旧文件与新稿并存却未说明。
+1. **提取。** 运行 `prepare`：复制 PDF，导出全文文本 `paper_text.md`、低清页面预览 `page-previews/`，并把 PDF 内嵌的大尺寸位图提取到 `figure-candidates/`（已去透明遮罩、无水印行号），`source_manifest.json` 列出候选图和 “Figure N” 出现的页码。
+2. **阅读与核对。** 读主文、结论、Figure legends 和关键图表；核对题名、DOI、日期、署名、通讯单位、版本。不能只读摘要。
+3. **确定 Fig。** 打开 `figure-candidates/` 与对应页预览，确认每张候选图对应 Figure 几、没有漏图或拼错。图是矢量绘制、没有候选时，用 `crop` 按页面区域渲染（先看页面预览定框）。把选定图片放到工作目录，写入 `content.json` 的 `figures`。
+4. **期刊截图。** 核对截图中的期刊、题名、版本与 PDF 一致后写入 `header.image`；不另找封面、不拼造官网截图。缺图时先完成其余部分并说明待补。
+5. **写稿。** 参照 `examples/bjd-ljag463/content.json` 的标题思路、导语句式和信息密度，依据当前 PDF 撰写 `content.json`；每个概述小节给出 PDF 页码证据。字段见 [references/content-schema.md](references/content-schema.md)。
+6. **渲染与检查。** `render` 生成全部文件并自动执行 `validate`。浏览器工具可用时，检查桌面与约 390px 手机宽度、Fig 横滑、点图放大、编辑、复制按钮。检查要求见 [references/delivery.md](references/delivery.md)。
+7. **交付。** 把 `preview.html` 发给用户，一句话说明：用 Chrome/Edge 打开，点“复制到公众号”，在后台正文区粘贴，等图片上传完再保存，用手机预览看横滑。只在有实际缺口时列待补项（如往期推文链接）。
 
 ## 脚本
 
-Python 依赖仅为 PyMuPDF、Beautiful Soup；先检查现有环境，需要时按 `requirements.txt` 安装到适当隔离环境，不擅自改系统 Python。
+依赖 PyMuPDF、Beautiful Soup、Pillow；先检查现有环境，需要时按 `requirements.txt` 装进隔离环境，不擅自改系统 Python。
 
 ```bash
-# 相对路径均从当前工作目录解析；技能目录可以位于任意位置。
-python3 /path/to/smoothwrite/scripts/smoothwrite.py prepare \
-  --pdf /path/to/paper.pdf --workdir /path/to/work/paper
+S=/path/to/smoothwrite/scripts/smoothwrite.py
 
-python3 /path/to/smoothwrite/scripts/smoothwrite.py render \
-  --prepared /path/to/work/paper --content /path/to/content.json \
-  --output /path/to/outputs/paper
-
-python3 /path/to/smoothwrite/scripts/smoothwrite.py validate \
-  --output /path/to/outputs/paper
+python3 $S prepare --pdf paper.pdf --workdir work/paper
+# 矢量图（无候选位图）时：按 PDF 点坐标或 0–1 页面比例裁切
+python3 $S crop --prepared work/paper --page 12 --bbox 0.08,0.10,0.92,0.62 --output work/fig2.png
+python3 $S render --prepared work/paper --content work/content.json --output outputs/paper
+python3 $S validate --output outputs/paper
 ```
 
-`render --profile other-team.json` 可替换团队资料；输入 JSON 中的素材路径相对各自 JSON 文件解析，便于在不同电脑使用。正文 HTML 和编辑器脚本分开存放于技能模板中，渲染结果保持离线单文件。
+`render --profile other-team.json` 可替换团队资料；`--no-pdf` 不在工具栏内嵌原文 PDF 下载；`--overwrite` 覆盖已有输出（先确认人工改动已同步回 `content.json`）。素材路径相对各自 JSON 文件解析。
 
-## 发布边界与现有稿修改
+## 微信兼容规则（脚本已内置，修改模板时必须遵守）
 
-- 原文“横向 PDF”实际是完整 PDF **逐页转图后横向翻阅**，不依赖 iframe、外部 PDF 插件或公众号执行 JavaScript。
-- `body-article.html` 是正文排版素材。浏览器复制效果不等于微信支持翻页；正式导入时需上传图片，并用微信支持的滑动组件或编辑器配置，最后手机预览。详见 [references/delivery.md](references/delivery.md)。
-- 相关论文原文可以做延伸阅读，但不要冒充已存在的历史推文。课题组介绍沿用用户确认的原文，不擅自压缩、更新数字或增加招聘。
-- 局部修改优先保留既有资产及正文；若需重建，确认 `content.json` 与当前人工编辑一致，再覆盖生成文件。模板及已删除模块不应在下一次渲染时复活。
-- 生成推文不代表授权导入后台、群发、发给他人或推送 GitHub。同步目标由用户另行指定。
+实际粘贴测试中，微信编辑器会丢掉下列写法，导致乱码、图片不显示或排版散开：
+
+- 不用 `display:table/flex/grid`、`position`、`object-fit`、`scroll-snap`、`calc()`、`<svg>`、`<button>`；复制内容不带 id、class、data-*。
+- **小图会被丢弃**：标题前的双圆标记用 CSS 画，logo/二维码嵌入时原始尺寸 ≥200px，`validate` 拒绝短边 <150px 的图片。
+- 图片放在表格单元格里会丢；左右并排一律用 `display:inline-block` 的 section。
+- 横滑 = 外层 `white-space:nowrap; overflow-x:auto`，内层 `display:inline-block` 卡片（宽 86%，露出下一张提示可滑）。
+- 图片压缩到宽 ≤1200px 的 JPEG，正文复制体积控制在 5MB 以内（BJD 范例约 0.8MB）。
+
+## 现有稿修改与发布边界
+
+- 局部修改优先改 `content.json` 后 `render --overwrite`，或直接改用户正在看的 HTML；不要让已删除模块（作者简介、页图翻阅）在重渲染时复活。
+- 课题组介绍沿用 `assets/smooth-profile.json` 原文，不擅自压缩、更新数字或加招聘。其他团队用自己的 profile。
+- 生成推文不代表授权登录公众号、导入、群发或推送 GitHub；这些由用户另行指定。

@@ -20,8 +20,8 @@ work/
 !assets/*.jpg
 !assets/*.jpeg
 
-# Approved complete HTML example and its companion images.
-!examples/bjd-ljag463/assets/*.png
-!examples/bjd-ljag463/assets/*.jpg
-!examples/bjd-ljag463/assets/paper-pages/*.jpg
+# Approved examples (BJD final version, blank template) and their images.
+!examples/*/assets/*.png
+!examples/*/assets/*.jpg
+!examples/*/assets/figures/*.jpg
 !examples/blank-template/preview.png

@@ -1,97 +1,91 @@
 # cxj-smoothwrite
 
-**smoothwrite v2.0.1**：将用户提供的论文 PDF 和期刊截图，按已确认的皮肤微生态 SMOOTH 模板、写法和文风，制作成可编辑、可离线分享的微信公众号 HTML。
+**smoothwrite v3.0.0**：把用户提供的论文 PDF 和期刊截图，按已确认的皮肤微生态 SMOOTH 模板、写法和文风，做成可编辑、可离线分享的公众号 HTML。打开后点 **“复制到公众号”**，就能直接粘贴进微信公众号官方编辑器，排版和图片都能保留。
+
+## v3 有什么变化
+
+- **改为“论文图示”：** 原来的“论文原文”逐页 PDF 页图，换成从 PDF 中提取的 **Fig 1、Fig 2……横向滑动卡片**。每张卡片有图、中文图题、中文说明和英文原题，图片不带水印和行号。
+- **删除作者简介模块。**
+- **保留往期推荐模块**，改为微信能保留的写法。
+- **修复粘贴后乱码、图片丢失：**
+  - 去掉了表格布局、绝对定位、svg 和按钮；
+  - 标题图标改用 CSS 画，不再用小图；
+  - logo 和二维码改为较大尺寸嵌入；
+  - 图片统一压缩，整篇正文从约 7 MB 降到约 0.8 MB。
+- **新增 `crop` 命令：** 图是矢量绘制、PDF 里没有内嵌位图时，按页面区域裁出来。
 
 ## 留空模板
 
-**[下载可编辑的留空 HTML 模板](https://github.com/SkinMicrobe/cxj-smoothwrite/raw/refs/heads/main/examples/blank-template/preview.html)** · [查看模板文件](examples/blank-template/preview.html)
+**[下载可编辑的留空 HTML 模板](https://github.com/SkinMicrobe/cxj-smoothwrite/raw/refs/heads/main/examples/blank-template/preview.html)** · [占位 content.json](examples/blank-template/content.json)
 
-下载后用电脑浏览器打开，点击“编辑文字”填写内容，完成后下载草稿保存。期刊截图、论文信息、导语、概述、原文页图、通讯作者及团队资料均留有占位位置；原文区的3页是版式示意，不是论文内容。正式制稿时，提供 PDF 和期刊截图，由 skill 完成替换和写作。
+用电脑浏览器打开，点“编辑文字与二维码”改内容，改完下载草稿保存。【括号内容】和占位图都要替换。正式制稿时，提供 PDF 和期刊截图，由 skill 完成替换和写作。
 
-下图是留空模板的实际页面预览：
-
-<img src="examples/blank-template/preview.png" alt="SMOOTH 公众号留空模板：期刊截图、论文信息、团队导语、论文概述、论文原文、通讯作者、往期推荐和课题组介绍" width="438">
+<img src="examples/blank-template/preview.png" alt="SMOOTH 公众号留空模板：期刊截图、论文信息、团队导语、论文概述、论文图示横滑、往期推荐和课题组介绍" width="438">
 
 ## 使用流程
 
-提供两份资料：
+提供：
 
 1. 一篇论文的 PDF。
-2. 一张包含期刊标识、论文标题等信息的期刊页面截图。
+2. 一张期刊页面截图，包含期刊标识、论文标题等信息。
+3. （可选）想放进“往期推荐”的公众号历史推文链接。
 
 在 Codex 中调用：
 
 > 使用 $smoothwrite，把这份 PDF 和期刊截图按 SMOOTH 模板生成对应的 HTML。
 
-Codex 阅读原文，撰写标题、团队导语和高信息密度的论文概述，再将本篇资料放入现有模板。用户无需另写正文、填写 JSON 或重新提供内置团队资料。
+Codex 会阅读原文，撰写标题、团队导语和概述，提取并翻译 Fig 图题，填入往期推荐，然后渲染 `preview.html`。
 
-主要交付物是 `preview.html`：图片、二维码、完整论文页图及原始 PDF 均内嵌，可单文件发给教授，下载后用电脑浏览器打开，支持文字编辑、原文翻页、放大和保存草稿。
+拿到 `preview.html` 后：
 
-## 模板与文风
+1. 用 Chrome 或 Edge 打开。
+2. 点“复制到公众号”。
+3. 在公众号后台正文区粘贴。
+4. 等图片全部上传完再保存。
+5. 发手机预览，检查 Fig 横滑。
 
-### 已确认的完整范文
+## 已确认的完整范文
 
-仓库内保留了实际测试并确认的 BJD 推文，供查看排版和学习文风：
+- **[下载 BJD 最终版 HTML](https://github.com/SkinMicrobe/cxj-smoothwrite/raw/refs/heads/main/examples/bjd-ljag463/preview.html)**：论文图示 Fig 1–3 横滑，加往期推荐。下载后用电脑浏览器打开，GitHub 文件页不渲染 HTML。
+- [文字范文](examples/bjd-ljag463/article.md) · [content.json](examples/bjd-ljag463/content.json) · [配套图片](examples/bjd-ljag463/assets)
 
-- **[下载可编辑 HTML 成品](https://github.com/SkinMicrobe/cxj-smoothwrite/raw/refs/heads/main/examples/bjd-ljag463/preview.html)**：下载后用电脑浏览器打开。正文、期刊截图、头像、二维码、49页原文图片和原始 PDF 均内嵌，可单文件离线使用。GitHub 文件页本身不渲染 HTML。
-- [阅读文字范文](examples/bjd-ljag463/article.md)：已确认的标题、团队导语和概述。
-- [查看配套图片](examples/bjd-ljag463/assets)：真实期刊头图、团队 logo、作者照片、二维码及全部原文页图。
-- [查看模板源文件](assets/preview-template.html)与[范文内容 JSON](examples/bjd-content.json)：用于理解模板和制作新稿。
+固定模块顺序：期刊截图 → 论文信息 → 团队导语 → 论文概述 → 论文图示 → 往期推荐 → 关于课题组。
 
-完整范文沿用已确认页面；仅将原来的相对 PDF 下载链接改为内嵌数据，便于单文件分享。`examples/bjd-content.json` 是生成脚本的字段和写法示例，完整成品以本节 HTML 为准。新论文沿用版式及文风，不能照抄该文的研究结论或作者身份。
-
-![BJD 范文期刊头图](examples/bjd-ljag463/assets/bjd-official-article-header.png)
-
-默认顺序：期刊头图 → 论文信息 → 团队导语 → 论文概述 → 论文原文 → 通讯作者简介 → 往期推荐 → 课题组介绍。
-
-- 沿用已确认的蓝橙配色与版式，每篇按原文替换内容。
-- 标题突出论文核心对象与具体问题；概述通常约800–1100个可见字符，约3个小节，减少设问铺垫和泛化总结。
-- 英文期刊名使用斜体，不加中文书名号。
-- 保留真实文章类型及证据归属，不把论文梳理的既有研究写成团队新实验。
-- 不设置点评或招聘模块，不自动恢复第一作者模块。
-- 通讯身份、作者简介和推荐逐篇匹配；缺少可选素材时不阻塞 HTML 生成。
-- 固定课题组介绍保留用户确认原文。其他团队应明确提供自己的 profile。
+- **配色与版式：** 沿用已确认的蓝橙配色和版式，每篇按原文替换内容。
+- **标题：** 突出论文的核心对象和具体问题。
+- **概述：** 约 800–1100 个可见字符，3 个左右小节，少用设问铺垫。
+- **期刊名：** 英文期刊名用斜体，不加中文书名号。
+- **证据归属：** 保留真实文章类型和证据归属，不把综述里引用的研究写成团队新实验。
+- **不设的模块：** 不设作者简介、点评或招聘模块。
+- **课题组介绍：** 保留用户确认的原文。其他团队需提供自己的 profile。
 
 ## 安装为 Codex skill
-
-将整个仓库放入本机 Codex 的 skills 目录；默认位置示例：
 
 ```bash
 git clone https://github.com/SkinMicrobe/cxj-smoothwrite.git ~/.codex/skills/cxj-smoothwrite
 ```
 
-已有该目录时，先检查和备份本地修改，再更新；不要直接覆盖未保存的内容。
+如果本机已有这个目录，先备份本地修改再 `git pull`。入口文件是 [`SKILL.md`](SKILL.md)。
 
-技能入口是 [`SKILL.md`](SKILL.md)，模板、素材和生成脚本随仓库提供。本版本不再提供旧版 Python 包的 `smoothwrite finalize` / Word 长文流程；旧版保留于 Git 历史。
+## 脚本
 
-## 脚本环境与内部步骤
-
-需要 Python 3.9 或更高版本、PyMuPDF 与 Beautiful Soup。可使用已具备依赖的环境，或在仓库中建立隔离环境：
+需要 Python 3.9 或更高版本，以及 PyMuPDF、Beautiful Soup、Pillow：
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
+python3 -m venv .venv && source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-以下是 Codex 使用的内部步骤；脚本负责提取、渲染和结构检查，正文由 Codex 阅读论文后撰写，不自动拼接 fallback 成稿：
+下面是 Codex 内部使用的步骤。正文由 Codex 阅读论文后撰写，脚本只负责提取、渲染和检查：
 
 ```bash
-python scripts/smoothwrite.py prepare \
-  --pdf /path/to/paper.pdf --workdir work/paper
-
-python scripts/smoothwrite.py render \
-  --prepared work/paper --content work/content.json --output outputs/paper
-
+python scripts/smoothwrite.py prepare --pdf paper.pdf --workdir work/paper
+#  → paper_text.md、page-previews/、figure-candidates/（PDF 内嵌原图）
+python scripts/smoothwrite.py crop --prepared work/paper --page 12 --bbox 0.08,0.1,0.92,0.62 --output work/fig2.png
+python scripts/smoothwrite.py render --prepared work/paper --content work/content.json --output outputs/paper
 python scripts/smoothwrite.py validate --output outputs/paper
 ```
 
-`content.json` 中的 `header.image` 对应用户提供的截图。完整字段见 [`references/content-schema.md`](references/content-schema.md)，写法及字段示例见 [`examples/bjd-content.json`](examples/bjd-content.json)。完整 HTML 范文与真实期刊截图见上方“已确认的完整范文”；处理新论文时使用用户提供的 PDF 和截图。
+字段说明见 [`references/content-schema.md`](references/content-schema.md)，交付与微信使用见 [`references/delivery.md`](references/delivery.md)，文风见 [`references/writing.md`](references/writing.md)。
 
-## 交付与发布
-
-除 `preview.html` 外，脚本还生成正文 HTML、文字稿、PDF 页图、书目信息和证据页码表，供后续修改和公众号导入使用。
-
-原文横向翻阅通过完整 PDF 逐页转图实现。浏览器预览不等于微信后台支持相同交互；导入时需上传图片、配置平台支持的滑动组件，并做手机预览。生成 HTML 不会自动登录、导入或群发公众号。
-
-自动检查覆盖页数、原文哈希、内嵌图片和模块内容，不能替代科学事实核对或视觉检查。详细交付规则见 [`references/delivery.md`](references/delivery.md)。
+`validate` 会检查微信兼容写法、图片尺寸、模块顺序和文字一致性。它不能代替科学事实核对，也不能代替公众号手机预览。生成 HTML 不会自动登录、导入或群发公众号。

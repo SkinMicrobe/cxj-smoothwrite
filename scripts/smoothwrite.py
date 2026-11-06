@@ -368,25 +368,52 @@ def figures_html(content, base, out):
             '</section></section>')
 
 
-def recommendations_html(content):
-    recs = content.get('recommendations', [])
-    if not recs:
+def wechat_post_image_html(image_path, output_path, link_key):
+    image = save_image(image_path, output_path, max_width=1200)
+    return ('<p style="margin:10px 0 0;border:1px solid #dce5ef;">'
+            '<a data-link="' + link_key + '" style="display:block;text-decoration:none;">'
+            '<img src="' + data_uri(image) + '" alt="往期推文配图" '
+            'style="display:block;width:100%;height:auto;margin:0;">'
+            '<span style="display:block;padding:8px 6px;text-align:center;font-size:13px;line-height:1.6;'
+            'font-weight:600;background-color:#eaf1f8;color:' + BLUE + ';">点击图片查看往期推文</span></a></p>')
+
+
+def recommendations_html(content, base, out):
+    if 'recommendations' not in content:
         return ''
-    result = heading(content.get('recommendations_heading', '往期推荐'), 'recommendations') + '<section id="recommendations">'
+    recs = content['recommendations']
+    cover = asset_path(content.get('wechat_post_image'), base) if recs and content.get('reserve_wechat_card') else None
+    card_style = 'padding:14px;border:1px solid #dce5ef;border-radius:8px;background-color:#f8fafc;'
+    outer_style = ' style="' + card_style + '"' if cover else ''
+    result = heading(content.get('recommendations_heading', '往期推荐'), 'recommendations') + '<section id="recommendations"' + outer_style + '>'
+    if not recs:
+        return result + '<p style="margin:0;line-height:1.75;"><br></p></section>'
     for i, rec in enumerate(recs, 1):
         key = 'rec' + str(i)
         last = i == len(recs)
         kind = '往期推文' if rec['kind'] == '公众号推文' else '相关论文原文'
         meta = rec.get('meta_label') or (kind + (' · ' + rec['meta'] if rec.get('meta') else ''))
-        result += ('<section data-rec style="margin:0 0 ' + ('6px' if last else '20px') + ';padding:0 0 ' + ('0' if last else '18px') +
-                   ';' + ('' if last else 'border-bottom:1px solid #e9edf1;') + '">'
+        rec_cover = asset_path(rec.get('wechat_image'), base)
+        spacing = 'margin:0 0 ' + ('6px' if last else '20px') + ';'
+        layout = card_style if rec_cover else ('' if last else 'padding:0 0 18px;border-bottom:1px solid #e9edf1;')
+        result += ('<section data-rec style="' + spacing + layout + '">'
                    '<p style="margin:0 0 4px;font-size:15px;font-weight:600;line-height:1.75;"><a data-link="' + key + '" href="' + esc(rec['url']) +
                    '" style="color:#252a30;text-decoration:none;">' + edit(rec['title']) + '</a></p>'
                    '<p style="margin:0;font-size:12px;line-height:1.75;color:#8a929b;">' + edit(meta) + '</p>')
         if rec.get('reason'):
             result += '<p style="margin:8px 0 0;font-size:13px;line-height:1.8;color:#6f7c8a;">' + edit(rec['reason']) + '</p>'
         result += ('<p style="margin:6px 0 0;font-size:12px;line-height:1.7;"><a data-link="' + key + '" href="' + esc(rec['url']) +
-                   '" style="color:' + BLUE + ';text-decoration:none;">' + ('阅读推文 ›' if rec['kind'] == '公众号推文' else '查看原文 ›') + '</a></p></section>')
+                   '" style="color:' + BLUE + ';text-decoration:none;">' + ('阅读推文 ›' if rec['kind'] == '公众号推文' else '查看原文 ›') + '</a></p>')
+        if rec_cover:
+            result += wechat_post_image_html(rec_cover, out / 'assets' / ('wechat-post-' + str(i)), 'wechat-post-' + key)
+        result += '</section>'
+    if content.get('reserve_wechat_card'):
+        if cover:
+            result += wechat_post_image_html(cover, out / 'assets' / 'wechat-post', 'wechat-post')
+        else:
+            result += ('<p style="margin:12px 0 0;background-color:#f2f6fa;border:1px solid #dce5ef;">'
+                       '<a data-link="wechat-post" style="display:block;padding:10px 12px;font-size:14px;line-height:1.6;'
+                       'font-weight:600;color:' + BLUE + ';text-decoration:none;">阅读往期推文 ›</a></p>')
     return result + '</section>'
 
 
@@ -413,8 +440,8 @@ def group_html(profile, base, out):
     result += '<section style="border-top:1px solid #c9c9bf;padding-top:15px;margin-top:4px;">'
     if qr_src:
         qr = save_image(qr_src, out / 'assets' / 'group-qr', max_width=600, min_width=300, fmt='PNG', nearest=True)
-        result += ('<section class="photo-slot" data-photo="qr" style="width:76px;margin:0 auto 14px;"><img src="' + data_uri(qr) +
-                   '" alt="课题组二维码" style="display:block;width:76px;height:auto;margin:0;"></section>')
+        result += ('<section class="photo-slot" data-photo="qr" style="width:120px;margin:0 auto 14px;"><img src="' + data_uri(qr) +
+                   '" alt="课题组二维码" style="display:block;width:120px;height:auto;margin:0;"></section>')
     for key, default_label in (('website', '实验室网站：'), ('email', '联系邮箱：')):
         value = group.get(key)
         if not value:
@@ -433,7 +460,7 @@ def group_html(profile, base, out):
 
 def build_article(content, content_base, profile, profile_base, out):
     return (header_html(content, content_base, out) + paper_html(content) + overview_html(content) +
-            figures_html(content, content_base, out) + recommendations_html(content) + group_html(profile, profile_base, out))
+            figures_html(content, content_base, out) + recommendations_html(content, content_base, out) + group_html(profile, profile_base, out))
 
 
 def wechat_body(article_html):
@@ -451,6 +478,10 @@ def wechat_body(article_html):
 def tools_html(content, pdf_uri, figure_count):
     pairs = [('paper', '论文原文地址', content['paper']['url'])] + [
         ('rec' + str(i + 1), '往期推荐 ' + str(i + 1).zfill(2), r['url']) for i, r in enumerate(content.get('recommendations', []))]
+    pairs.extend(('wechat-post-rec' + str(i), f'往期推荐 {i:02d} 的公众号文章链接', '')
+                 for i, rec in enumerate(content.get('recommendations', []), 1) if rec.get('wechat_image'))
+    if content.get('reserve_wechat_card') and content.get('recommendations'):
+        pairs.append(('wechat-post', '往期公众号文章链接', ''))
     inputs = ''.join('<label>' + esc(label) + '<input type="url" data-link-input="' + key + '" value="' + esc(url) + '"></label>' for key, label, url in pairs)
     pdf = ('<details><summary>原文 PDF</summary><p><a download="original-paper.pdf" href="' + pdf_uri + '">下载完整原文 PDF</a></p></details>') if pdf_uri else ''
     return ('<span class="brand-rule"></span><h1>SMOOTH 论文推文</h1><p class="lead">蓝橙色模板 · 论文图示 Fig 1–' + str(figure_count) +
@@ -530,7 +561,10 @@ def render(args):
     if not contract['figure_count']:
         notes.append('- 未提供论文图示，页面省略该模块。')
     if not contract['recommendation_count']:
-        notes.append('- 未提供往期推荐，页面省略该模块。')
+        if 'recommendations' in content:
+            notes.append('- 往期推荐已留空，由用户在公众号后台添加。')
+        else:
+            notes.append('- 未提供往期推荐，页面省略该模块。')
     notes += ['', '## 本稿核对备注', ''] + ['- ' + str(x) for x in content.get('review_notes', [])]
     (out / 'review_notes.md').write_text('\n'.join(notes) + '\n', encoding='utf-8')
     errors = validate_output(out)

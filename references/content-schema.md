@@ -1,6 +1,6 @@
 # content.json 输入约定（v3）
 
-用户只需提供论文 PDF 和期刊截图（可选往期推文链接）。本文件是代理的内部约定，不是给用户的表单。完整实例：[`examples/bjd-ljag463/content.json`](../examples/bjd-ljag463/content.json)；留空占位版：[`examples/blank-template/content.json`](../examples/blank-template/content.json)。
+常规输入为本期论文 PDF、两条指定往期推荐及对应图片、本期期刊官网截图。本文件是代理的内部约定，不是给用户的表单。完整实例：[`examples/bjd-ljag463/content.json`](../examples/bjd-ljag463/content.json)；留空占位版：[`examples/blank-template/content.json`](../examples/blank-template/content.json)。
 
 ## 必填
 
@@ -79,7 +79,9 @@
 
 - `kind` 只能是 `公众号推文`（显示“往期推文 · meta”和“阅读推文 ›”）或 `相关论文`（显示“相关论文原文 · meta”和“查看原文 ›”）。`meta_label` 可整体覆盖第二行。
 - 不能把只有 DOI 的论文标成公众号推文。预览左侧“设置论文与往期链接”可在浏览器中替换链接。
-- `recommendations_heading` 默认“往期推荐”。
+- `recommendations_heading` 默认“往期推荐”。传入 `"recommendations": []` 时渲染标题和空行。省略此字段会隐藏整个模块。
+- 常规做法是在每个推荐条目中设置 `wechat_image`（相对于内容 JSON 的图片路径）。每条单独成卡，保留期刊原文链接；图片跳转地址由用户在预览页按编号分别填写。用 `meta_label` 显示期刊全名和发表年份。
+- 兼容已有单图片稿件。若使用顶层的推荐图片，填写 `recommendations`，并在顶层设置 `"reserve_wechat_card": true`。推荐条目下方会显示「阅读往期推文」。在预览的「设置论文与往期链接」中填入文章地址后复制，或粘贴正文后在公众号编辑器中给这行文字设置超链接。若同时提供顶层 `wechat_post_image`（相对于内容 JSON 的图片路径），则以图片替换文字入口，并在图下提示「点击图片查看往期推文」。同一设置项绑定图片的跳转地址。
 
 ## 其他可选字段
 

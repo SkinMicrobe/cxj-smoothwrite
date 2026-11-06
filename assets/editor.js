@@ -18,7 +18,7 @@ const read=f=>new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.r
 document.querySelectorAll('.photo-slot').forEach(el=>el.onclick=()=>{if(editing){photoTarget=el;$('#photo-file').click();}});
 $('#photo-file').onchange=async e=>{
   try{const f=e.target.files[0];if(!f)return;if(!/^image\/(png|jpeg|webp)$/.test(f.type))throw Error('请选择 PNG、JPG 或 WebP 图片。');
-    const img=new Image();img.src=await read(f);img.alt='课题组二维码';img.style.cssText='display:block;width:76px;height:auto;margin:0;';
+    const img=new Image();img.src=await read(f);img.alt='课题组二维码';img.style.cssText=photoTarget.querySelector('img').style.cssText;
     photoTarget.replaceChildren(img);status('图片已替换，请下载草稿保存。');
   }catch(err){status(err.message);}e.target.value='';
 };
